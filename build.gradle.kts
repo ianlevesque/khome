@@ -121,7 +121,7 @@ ktlint {
 }
 
 jacoco {
-    toolVersion = "0.8.4"
+    toolVersion = "0.8.11"
 }
 
 printcoverage {
