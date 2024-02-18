@@ -8,9 +8,6 @@ plugins {
     `maven-publish`
     id("io.gitlab.arturbosch.detekt") version "1.23.5"
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
-    id("de.jansauer.printcoverage") version "2.0.0"
-    jacoco
-    id("com.github.dawnwords.jacoco.badge") version "0.2.4"
 }
 
 group = "com.dennisschroeder"
@@ -73,7 +70,6 @@ tasks {
 defaultTasks("dokkaHtml")
 
 val sourcesJar by tasks.registering(Jar::class) {
-    classifier = "sources"
     from(sourceSets["main"].allSource)
 }
 
@@ -98,15 +94,6 @@ tasks.withType<Test> {
 tasks {
     check {
         dependsOn(test)
-        finalizedBy(jacocoTestReport, jacocoTestCoverageVerification, printCoverage, generateJacocoBadge)
-    }
-
-    jacocoTestReport {
-        reports {
-            xml.isEnabled = true
-            csv.isEnabled = false
-            html.isEnabled = true
-        }
     }
 }
 
@@ -118,12 +105,4 @@ detekt {
 ktlint {
     version.set("0.44.0")
     ignoreFailures.set(false)
-}
-
-jacoco {
-    toolVersion = "0.8.11"
-}
-
-printcoverage {
-    coverageType.set("LINE")
 }
