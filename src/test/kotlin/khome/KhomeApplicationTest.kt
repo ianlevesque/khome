@@ -24,7 +24,6 @@ import java.time.Instant
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class KhomeApplicationTest {
-
     val sut = khomeApplication()
 
     data class SensorState(override val value: String) : State<String>
@@ -33,19 +32,18 @@ internal class KhomeApplicationTest {
         override val userId: UserId?,
         override val lastChanged: Instant,
         override val lastUpdated: Instant,
-        override val friendlyName: FriendlyName
+        override val friendlyName: FriendlyName,
     ) : Attributes
 
     @Nested
     inner class Sensors {
-
         @Test
         fun `assert sensor factory creates new Sensor instance`() {
             val sensor =
                 sut.Sensor<SensorState, SensorAttributes>(
                     EntityId.fromPair("sensor".domain to "some_sensor".objectId),
                     SensorState::class,
-                    SensorAttributes::class
+                    SensorAttributes::class,
                 )
 
             assertThat(sensor).isInstanceOf(Sensor::class)
@@ -53,11 +51,12 @@ internal class KhomeApplicationTest {
     }
 
     data class ActuatorState(override val value: String) : State<String>
+
     data class ActuatorAttributes(
         override val userId: UserId?,
         override val lastChanged: Instant,
         override val lastUpdated: Instant,
-        override val friendlyName: FriendlyName
+        override val friendlyName: FriendlyName,
     ) : Attributes
 
     @Nested
@@ -73,9 +72,9 @@ internal class KhomeApplicationTest {
                         DefaultResolvedServiceCommand(
                             null,
                             "turn_on".service,
-                            EntityIdOnlyServiceData()
+                            EntityIdOnlyServiceData(),
                         )
-                    }
+                    },
                 )
 
             assertThat(actuator).isInstanceOf(Actuator::class)

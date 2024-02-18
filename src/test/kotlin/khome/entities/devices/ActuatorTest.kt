@@ -29,7 +29,6 @@ import java.time.OffsetDateTime
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ActuatorTest {
-
     data class ActuatorTestState(override val value: String, val booleanAttribute: Boolean, val intAttribute: Int) :
         State<String>
 
@@ -39,7 +38,7 @@ internal class ActuatorTest {
         override val userId: UserId?,
         override val lastChanged: Instant,
         override val lastUpdated: Instant,
-        override val friendlyName: FriendlyName
+        override val friendlyName: FriendlyName,
     ) : Attributes
 
     @BeforeAll
@@ -52,20 +51,21 @@ internal class ActuatorTest {
 
     @Test
     fun `actuator state response mapping is correct`() {
-
-        val sut = ActuatorImpl<ActuatorTestState, ActuatorTestAttributes>(
-            app = KhomeApplicationImpl(),
-            mapper = mapper,
-            resolver = ServiceCommandResolver {
-                DefaultResolvedServiceCommand(
-                    null,
-                    "turn_on".service,
-                    EntityIdOnlyServiceData()
-                )
-            },
-            stateType = ActuatorTestState::class,
-            attributesType = ActuatorTestAttributes::class
-        )
+        val sut =
+            ActuatorImpl<ActuatorTestState, ActuatorTestAttributes>(
+                app = KhomeApplicationImpl(),
+                mapper = mapper,
+                resolver =
+                    ServiceCommandResolver {
+                        DefaultResolvedServiceCommand(
+                            null,
+                            "turn_on".service,
+                            EntityIdOnlyServiceData(),
+                        )
+                    },
+                stateType = ActuatorTestState::class,
+                attributesType = ActuatorTestAttributes::class,
+            )
 
         assertThrows<IllegalStateException> {
             sut.actualState
@@ -74,20 +74,20 @@ internal class ActuatorTest {
         val testStateJson =
             //language=json
             """
-                {
-                    "entity_id":"test.object_id",
-                    "last_changed":"2016-11-26T01:37:24.265390+00:00",
-                    "state":"on",
-                    "attributes":{
-                        "array_attribute": [1,2,3,4,5],
-                        "int_attribute": 73,
-                        "double_attribute": 30.0,
-                        "boolean_attribute": true,
-                        "friendly_name":"Test Entity"
-                    },
-                    "last_updated":"2016-11-26T01:37:24.265390+00:00",
-                    "context": { "user_id": null }
-                 }
+            {
+                "entity_id":"test.object_id",
+                "last_changed":"2016-11-26T01:37:24.265390+00:00",
+                "state":"on",
+                "attributes":{
+                    "array_attribute": [1,2,3,4,5],
+                    "int_attribute": 73,
+                    "double_attribute": 30.0,
+                    "boolean_attribute": true,
+                    "friendly_name":"Test Entity"
+                },
+                "last_updated":"2016-11-26T01:37:24.265390+00:00",
+                "context": { "user_id": null }
+             }
             """.trimIndent()
 
         val stateAsJsonObject = mapper.fromJson<JsonObject>(testStateJson)
@@ -102,65 +102,67 @@ internal class ActuatorTest {
         assertThat(sut.attributes.doubleAttribute).isEqualTo(30.0)
         assertThat(sut.attributes.friendlyName).isEqualTo(FriendlyName.from("Test Entity"))
         assertThat(sut.attributes.lastChanged).isEqualTo(
-            OffsetDateTime.parse("2016-11-26T01:37:24.265390+00:00").toInstant()
+            OffsetDateTime.parse("2016-11-26T01:37:24.265390+00:00").toInstant(),
         )
         assertThat(sut.attributes.lastUpdated).isEqualTo(
-            OffsetDateTime.parse("2016-11-26T01:37:24.265390+00:00").toInstant()
+            OffsetDateTime.parse("2016-11-26T01:37:24.265390+00:00").toInstant(),
         )
     }
 
     @Test
     fun `actuator stores state and attributes youngest first`() {
-        val sut = ActuatorImpl<ActuatorTestState, ActuatorTestAttributes>(
-            app = KhomeApplicationImpl(),
-            mapper = mapper,
-            resolver = ServiceCommandResolver {
-                DefaultResolvedServiceCommand(
-                    null,
-                    "turn_on".service,
-                    EntityIdOnlyServiceData()
-                )
-            },
-            stateType = ActuatorTestState::class,
-            attributesType = ActuatorTestAttributes::class
-        )
+        val sut =
+            ActuatorImpl<ActuatorTestState, ActuatorTestAttributes>(
+                app = KhomeApplicationImpl(),
+                mapper = mapper,
+                resolver =
+                    ServiceCommandResolver {
+                        DefaultResolvedServiceCommand(
+                            null,
+                            "turn_on".service,
+                            EntityIdOnlyServiceData(),
+                        )
+                    },
+                stateType = ActuatorTestState::class,
+                attributesType = ActuatorTestAttributes::class,
+            )
 
         val firstTestState =
             //language=json
             """ 
-                {
-                    "entity_id":"test.object_id",
-                    "last_changed":"2016-11-26T01:37:24.265390+00:00",
-                    "state":"off",
-                    "attributes":{
-                        "array_attribute": [1,2,3,4,5],
-                        "int_attribute": 73,
-                        "double_attribute": 30.0,
-                        "boolean_attribute": true,
-                        "friendly_name":"Test Entity"
-                    },
-                    "last_updated":"2016-11-26T01:37:24.265390+00:00",
-                    "context": { "user_id": null }
-                 }
+            {
+                "entity_id":"test.object_id",
+                "last_changed":"2016-11-26T01:37:24.265390+00:00",
+                "state":"off",
+                "attributes":{
+                    "array_attribute": [1,2,3,4,5],
+                    "int_attribute": 73,
+                    "double_attribute": 30.0,
+                    "boolean_attribute": true,
+                    "friendly_name":"Test Entity"
+                },
+                "last_updated":"2016-11-26T01:37:24.265390+00:00",
+                "context": { "user_id": null }
+             }
             """.trimIndent()
 
         val secondTestState =
             //language=json
             """
-                {
-                    "entity_id":"test.object_id",
-                    "last_changed":"2016-11-26T01:37:24.265390+00:00",
-                    "state":"on",
-                    "attributes":{
-                        "array_attribute": [1,2,3,4,5],
-                        "int_attribute": 73,
-                        "double_attribute": 30.0,
-                        "boolean_attribute": true,
-                        "friendly_name":"Test Entity"
-                    },
-                    "last_updated":"2016-11-26T01:37:24.265390+00:00",
-                    "context": { "user_id": null }
-                 }
+            {
+                "entity_id":"test.object_id",
+                "last_changed":"2016-11-26T01:37:24.265390+00:00",
+                "state":"on",
+                "attributes":{
+                    "array_attribute": [1,2,3,4,5],
+                    "int_attribute": 73,
+                    "double_attribute": 30.0,
+                    "boolean_attribute": true,
+                    "friendly_name":"Test Entity"
+                },
+                "last_updated":"2016-11-26T01:37:24.265390+00:00",
+                "context": { "user_id": null }
+             }
             """.trimIndent()
 
         val firstStateAsJsonObject = mapper.fromJson<JsonObject>(firstTestState)

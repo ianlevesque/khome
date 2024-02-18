@@ -9,7 +9,6 @@ import org.junit.jupiter.api.assertThrows
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class CircularBufferTest {
-
     @Test
     fun `youngest element first in order`() {
         val sut = CircularBuffer<Int>(10)
