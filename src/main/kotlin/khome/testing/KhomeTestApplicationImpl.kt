@@ -1,7 +1,6 @@
 package khome.testing
 
 import com.google.gson.JsonObject
-import io.ktor.util.KtorExperimentalAPI
 import khome.ActuatorsByApiName
 import khome.ActuatorsByEntity
 import khome.HassAPiCommandHistory
@@ -38,7 +37,6 @@ internal class KhomeTestApplicationImpl(
         KhomeKoinContext.addModule(testClient)
     }
 
-    @KtorExperimentalAPI
     @ObsoleteCoroutinesApi
     @ExperimentalStdlibApi
     override fun setStateAndAttributes(json: String) {

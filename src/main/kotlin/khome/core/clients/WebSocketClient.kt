@@ -1,9 +1,9 @@
 package khome.core.clients
 
 import io.ktor.client.HttpClient
-import io.ktor.client.features.websocket.DefaultClientWebSocketSession
-import io.ktor.client.features.websocket.ws
-import io.ktor.client.features.websocket.wss
+import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
+import io.ktor.client.plugins.websocket.ws
+import io.ktor.client.plugins.websocket.wss
 import io.ktor.http.HttpMethod
 
 class WebSocketClient(delegate: HttpClient) {

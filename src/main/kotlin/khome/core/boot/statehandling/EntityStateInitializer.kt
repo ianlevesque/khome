@@ -1,7 +1,6 @@
 package khome.core.boot.statehandling
 
 import com.google.gson.JsonObject
-import io.ktor.util.KtorExperimentalAPI
 import khome.KhomeSession
 import khome.communicating.CALLER_ID
 import khome.core.koin.KhomeComponent
@@ -16,7 +15,7 @@ interface EntityStateInitializer {
     suspend fun initialize()
 }
 
-@OptIn(ObsoleteCoroutinesApi::class, KtorExperimentalAPI::class)
+@OptIn(ObsoleteCoroutinesApi::class)
 internal class EntityStateInitializerImpl(
     val khomeSession: KhomeSession,
     private val sensorStateUpdater: SensorStateUpdater,

@@ -2,10 +2,9 @@ package khome.core.boot
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonNull
-import io.ktor.http.cio.websocket.Frame
-import io.ktor.http.cio.websocket.WebSocketSession
-import io.ktor.http.cio.websocket.readText
-import io.ktor.util.KtorExperimentalAPI
+import io.ktor.websocket.Frame
+import io.ktor.websocket.WebSocketSession
+import io.ktor.websocket.readText
 import khome.EventHandlerByEventType
 import khome.KhomeSession
 import khome.core.EventResponse
@@ -32,7 +31,6 @@ interface EventResponseConsumer {
 }
 
 @ObsoleteCoroutinesApi
-@KtorExperimentalAPI
 @ExperimentalCoroutinesApi
 internal class EventResponseConsumerImpl(
     private val khomeSession: KhomeSession,
@@ -53,6 +51,7 @@ internal class EventResponseConsumerImpl(
                         handleStateChangedResponse(frameText)
                         handleEventResponse(frameText)
                     }
+
                     ResponseType.RESULT -> {
                         handleSuccessResultResponse(frameText)
                         handleErrorResultResponse(frameText)

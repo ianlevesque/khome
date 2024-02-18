@@ -1,7 +1,6 @@
 package khome
 
 import io.ktor.http.HttpMethod
-import io.ktor.util.KtorExperimentalAPI
 import khome.core.Configuration
 import khome.core.clients.WebSocketClient
 import khome.core.mapping.ObjectMapperInterface
@@ -10,7 +9,6 @@ import mu.KotlinLogging
 import java.net.ConnectException
 
 @ObsoleteCoroutinesApi
-@KtorExperimentalAPI
 internal class HassClientImpl(
     private val config: Configuration,
     private val httpClient: WebSocketClient,
@@ -36,6 +34,7 @@ internal class HassClientImpl(
                         path = path,
                         block = { block(KhomeSession(this, objectMapper)) },
                     )
+
                 false ->
                     httpClient.websocket(
                         method = method,
@@ -54,6 +53,5 @@ internal class HassClientImpl(
 
 internal interface HassClient {
     @ObsoleteCoroutinesApi
-    @KtorExperimentalAPI
     suspend fun startSession(block: suspend KhomeSession.() -> Unit)
 }

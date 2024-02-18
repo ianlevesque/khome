@@ -1,7 +1,6 @@
 package khome.entities.devices
 
 import com.google.gson.JsonObject
-import io.ktor.util.KtorExperimentalAPI
 import khome.KhomeApplicationImpl
 import khome.core.mapping.ObjectMapperInterface
 import khome.core.observing.CircularBuffer
@@ -41,7 +40,6 @@ internal class SensorImpl<S : State<*>, A : Attributes>(
         ).also { observers.add(it) }
 
     @ObsoleteCoroutinesApi
-    @KtorExperimentalAPI
     @ExperimentalStdlibApi
     fun trySetActualStateFromAny(newState: JsonObject) {
         @Suppress("UNCHECKED_CAST")
@@ -50,7 +48,6 @@ internal class SensorImpl<S : State<*>, A : Attributes>(
     }
 
     @ObsoleteCoroutinesApi
-    @KtorExperimentalAPI
     fun trySetAttributesFromAny(newAttributes: JsonObject) {
         @Suppress("UNCHECKED_CAST")
         attributes = mapper.fromJson(newAttributes, attributesType.java) as A

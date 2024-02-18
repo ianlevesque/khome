@@ -2,7 +2,6 @@ package khome.core.mapping
 
 import com.google.gson.Gson
 import com.google.gson.JsonElement
-import io.ktor.util.KtorExperimentalAPI
 import khome.core.koin.KhomeComponent
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
@@ -20,7 +19,6 @@ interface ObjectMapperInterface {
     fun <Destination> toJson(from: Destination): String
 }
 
-@KtorExperimentalAPI
 @ObsoleteCoroutinesApi
 class ObjectMapper(private val delegate: Gson) : KhomeComponent, ObjectMapperInterface {
     override fun <Target> fromJson(

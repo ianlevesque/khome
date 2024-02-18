@@ -1,7 +1,6 @@
 package khome.entities
 
 import com.google.gson.JsonObject
-import io.ktor.util.KtorExperimentalAPI
 import khome.ActuatorsByApiName
 import khome.SensorsByApiName
 import khome.values.EntityId
@@ -12,7 +11,6 @@ internal class ActuatorStateUpdater(private val actuatorsByApiName: ActuatorsByA
     private val logger = KotlinLogging.logger { }
 
     @ObsoleteCoroutinesApi
-    @KtorExperimentalAPI
     @ExperimentalStdlibApi
     operator fun invoke(
         newActualState: JsonObject,

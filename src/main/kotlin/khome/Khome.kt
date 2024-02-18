@@ -5,14 +5,11 @@ import com.google.gson.GsonBuilder
 import com.google.gson.TypeAdapter
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
-import io.ktor.client.features.defaultRequest
-import io.ktor.client.features.json.GsonSerializer
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.websocket.WebSockets
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.request.header
-import io.ktor.client.request.host
-import io.ktor.client.request.port
-import io.ktor.util.KtorExperimentalAPI
+import io.ktor.serialization.gson.gson
 import khome.core.Configuration
 import khome.core.DefaultConfiguration
 import khome.core.boot.EventResponseConsumer
@@ -126,7 +123,6 @@ typealias KhomeBuilder = Khome.() -> Unit
 
 @ExperimentalCoroutinesApi
 @ObsoleteCoroutinesApi
-@KtorExperimentalAPI
 fun khomeApplication(init: KhomeBuilder = {}): KhomeApplication = KhomeImpl().apply(init).createApplication()
 
 /**
@@ -154,7 +150,7 @@ interface Khome {
 inline fun <reified T : Any, reified P : Any> Khome.registerTypeAdapter(adapter: KhomeTypeAdapter<T>) =
     registerTypeAdapter(adapter, T::class, P::class)
 
-@OptIn(ExperimentalStdlibApi::class, KtorExperimentalAPI::class, ObsoleteCoroutinesApi::class)
+@OptIn(ObsoleteCoroutinesApi::class)
 private class KhomeImpl : Khome, KhomeComponent {
     init {
         KhomeKoinContext.startKoinApplication()
@@ -209,16 +205,14 @@ private class KhomeImpl : Khome, KhomeComponent {
                 single {
                     val client =
                         HttpClient(CIO) {
-                            install(JsonFeature) {
-                                serializer =
-                                    GsonSerializer {
-                                        setPrettyPrinting()
-                                        setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                                        typeAdapters.forEach { adapter ->
-                                            registerTypeAdapter(adapter.key.java, adapter.value.nullSafe())
-                                        }
-                                        create()!!
+                            install(ContentNegotiation) {
+                                gson {
+                                    setPrettyPrinting()
+                                    setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                                    typeAdapters.forEach { adapter ->
+                                        registerTypeAdapter(adapter.key.java, adapter.value.nullSafe())
                                     }
+                                }
                             }
 
                             val config = get<Configuration>()

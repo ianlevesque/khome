@@ -3,7 +3,8 @@ package khome.communicating
 import com.google.gson.annotations.SerializedName
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.utils.EmptyContent
-import io.ktor.util.KtorExperimentalAPI
+import io.ktor.http.encodedPath
+import io.ktor.util.InternalAPI
 import khome.KhomeSession
 import khome.communicating.CommandType.CALL_SERVICE
 import khome.communicating.CommandType.SUBSCRIBE_EVENTS
@@ -61,7 +62,6 @@ abstract class DesiredServiceData : CommandDataWithEntityId {
 class EntityIdOnlyServiceData : DesiredServiceData()
 
 @ObsoleteCoroutinesApi
-@KtorExperimentalAPI
 internal data class ServiceCommandImpl<SD>(
     var domain: Domain? = null,
     val service: Service,
@@ -70,7 +70,7 @@ internal data class ServiceCommandImpl<SD>(
     override val type: CommandType = CALL_SERVICE,
 ) : HassApiCommand
 
-@KtorExperimentalAPI
+@OptIn(InternalAPI::class)
 @ObsoleteCoroutinesApi
 internal class HassApiClientImpl(
     private val khomeSession: KhomeSession,
