@@ -10,7 +10,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4
 
       - name: Commit check
         uses: docker://commitsar/commitsar:latest@sha256:3866e811c6357b411044350a3c840e239c9a6c8b9972a988c390f2a1ae900640
