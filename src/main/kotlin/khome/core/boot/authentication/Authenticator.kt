@@ -18,7 +18,10 @@ internal class AuthenticatorImpl(
                         consumeAuthenticationResponse()
                             .let { authResponse ->
                                 when (authResponse.type) {
-                                    "auth_ok" -> logger.info { "Authenticated successfully to homeassistant version ${authResponse.haVersion}" }
+                                    "auth_ok" ->
+                                        logger.info {
+                                            "Authenticated successfully to homeassistant version ${authResponse.haVersion}"
+                                        }
                                     "auth_invalid" -> logger.error { "Authentication failed. Server send: ${authResponse.message}" }
                                 }
                             }

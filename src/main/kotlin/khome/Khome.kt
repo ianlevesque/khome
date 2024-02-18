@@ -255,7 +255,14 @@ private class KhomeImpl : Khome, KhomeComponent {
                     )
                 }
 
-                single<EntityStateInitializer> { (khomeSession: KhomeSession, sensorStateUpdater: SensorStateUpdater, actuatorStateUpdater: ActuatorStateUpdater, entityRegistrationValidation: EntityRegistrationValidation) ->
+                single<EntityStateInitializer> {
+                        (
+                            khomeSession: KhomeSession,
+                            sensorStateUpdater: SensorStateUpdater,
+                            actuatorStateUpdater: ActuatorStateUpdater,
+                            entityRegistrationValidation: EntityRegistrationValidation,
+                        ),
+                    ->
                     EntityStateInitializerImpl(
                         khomeSession,
                         sensorStateUpdater,
@@ -270,7 +277,17 @@ private class KhomeImpl : Khome, KhomeComponent {
                     )
                 }
 
-                single<EventResponseConsumer> { (khomeSession: KhomeSession, sensorStateUpdater: SensorStateUpdater, actuatorStateUpdater: ActuatorStateUpdater, eventHandlerByEventType: EventHandlerByEventType, errorResponseHandler: (ErrorResponseData) -> Unit) ->
+                single<EventResponseConsumer> {
+                        (
+                            khomeSession: KhomeSession,
+                            sensorStateUpdater: SensorStateUpdater,
+                            actuatorStateUpdater: ActuatorStateUpdater,
+                            eventHandlerByEventType: EventHandlerByEventType,
+                            errorResponseHandler: (
+                                ErrorResponseData,
+                            ) -> Unit,
+                        ),
+                    ->
                     EventResponseConsumerImpl(
                         khomeSession = khomeSession,
                         sensorStateUpdater = sensorStateUpdater,

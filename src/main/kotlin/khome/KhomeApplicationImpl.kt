@@ -80,7 +80,9 @@ internal class KhomeApplicationImpl : KhomeApplication {
 
     var errorResponseHandlerFunction: (ErrorResponseData) -> Unit = { errorResponseData ->
         logger.error {
-            "CommandId: ${errorResponseData.commandId} - errorCode: ${errorResponseData.errorResponse.code} | message: ${errorResponseData.errorResponse.message}"
+            "CommandId: ${errorResponseData.commandId} - " +
+                "errorCode: ${errorResponseData.errorResponse.code} | " +
+                "message: ${errorResponseData.errorResponse.message}"
         }
     }
 
