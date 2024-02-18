@@ -19,8 +19,7 @@ import java.time.Instant
 typealias Person = Sensor<PersonState, PersonAttributes>
 
 @Suppress("FunctionName")
-fun KhomeApplication.Person(objectId: ObjectId): Person =
-    Sensor(EntityId.fromPair("person".domain to objectId))
+fun KhomeApplication.Person(objectId: ObjectId): Person = Sensor(EntityId.fromPair("person".domain to objectId))
 
 data class PersonState(override val value: Zone) : State<Zone>
 
@@ -30,7 +29,7 @@ data class PersonAttributes(
     override val userId: UserId?,
     override val friendlyName: FriendlyName,
     override val lastChanged: Instant,
-    override val lastUpdated: Instant
+    override val lastUpdated: Instant,
 ) : Attributes
 
 val Person.isHome
@@ -42,5 +41,4 @@ val Person.isAway
 inline fun Person.onArrivedHome(crossinline f: Person.(Switchable) -> Unit) =
     onMeasurementValueChangedFrom("home".zone to "not_home".zone, f)
 
-inline fun Person.onLeftHome(crossinline f: Person.(Switchable) -> Unit) =
-    onMeasurementValueChangedFrom("not_home".zone to "home".zone, f)
+inline fun Person.onLeftHome(crossinline f: Person.(Switchable) -> Unit) = onMeasurementValueChangedFrom("not_home".zone to "home".zone, f)

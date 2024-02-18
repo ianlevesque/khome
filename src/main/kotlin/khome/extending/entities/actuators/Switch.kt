@@ -24,7 +24,7 @@ inline fun <reified A : Attributes> KhomeApplication.Switch(objectId: ObjectId):
         EntityId.fromPair("switch".domain to objectId),
         ServiceCommandResolver { switchableState ->
             mapSwitchable(switchableState.value)
-        }
+        },
     )
 
 @Suppress("FunctionName")
@@ -35,5 +35,5 @@ data class PowerSwitchAttributes(
     override val userId: UserId?,
     override val friendlyName: FriendlyName,
     override val lastChanged: Instant,
-    override val lastUpdated: Instant
+    override val lastUpdated: Instant,
 ) : Attributes

@@ -14,7 +14,10 @@ internal class ActuatorStateUpdater(private val actuatorsByApiName: ActuatorsByA
     @ObsoleteCoroutinesApi
     @KtorExperimentalAPI
     @ExperimentalStdlibApi
-    operator fun invoke(newActualState: JsonObject, entityId: EntityId) {
+    operator fun invoke(
+        newActualState: JsonObject,
+        entityId: EntityId,
+    ) {
         actuatorsByApiName[entityId]?.let { entity ->
             entity.trySetAttributesFromAny(newAttributes = newActualState)
             entity.trySetActualStateFromAny(newState = newActualState)
@@ -27,7 +30,10 @@ internal class SensorStateUpdater(private val sensorsByApiName: SensorsByApiName
     private val logger = KotlinLogging.logger { }
 
     @ExperimentalStdlibApi
-    operator fun invoke(newActualState: JsonObject, entityId: EntityId) {
+    operator fun invoke(
+        newActualState: JsonObject,
+        entityId: EntityId,
+    ) {
         sensorsByApiName[entityId]?.let { entity ->
             entity.trySetAttributesFromAny(newAttributes = newActualState)
             entity.trySetActualStateFromAny(newState = newActualState)

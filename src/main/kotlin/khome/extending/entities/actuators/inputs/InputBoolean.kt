@@ -23,7 +23,7 @@ fun KhomeApplication.InputBoolean(objectId: ObjectId): InputBoolean =
         EntityId.fromPair("input_boolean".domain to objectId),
         ServiceCommandResolver { desiredState ->
             mapSwitchable(desiredState.value)
-        }
+        },
     )
 
 data class InputBooleanAttributes(
@@ -32,5 +32,5 @@ data class InputBooleanAttributes(
     override val userId: UserId?,
     override val friendlyName: FriendlyName,
     override val lastChanged: Instant,
-    override val lastUpdated: Instant
+    override val lastUpdated: Instant,
 ) : Attributes

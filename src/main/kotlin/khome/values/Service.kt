@@ -6,9 +6,7 @@ import khome.core.mapping.KhomeTypeAdapter
 
 data class Service private constructor(val value: String) {
     companion object : KhomeTypeAdapter<Service> {
-
-        fun fromDevice(device: Device): Service =
-            Service(device.value)
+        fun fromDevice(device: Device): Service = Service(device.value)
 
         override fun <P> from(value: P): Service {
             return Service(value as String)

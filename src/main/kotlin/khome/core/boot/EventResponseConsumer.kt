@@ -40,25 +40,26 @@ internal class EventResponseConsumerImpl(
     private val sensorStateUpdater: SensorStateUpdater,
     private val actuatorStateUpdater: ActuatorStateUpdater,
     private val eventHandlerByEventType: EventHandlerByEventType,
-    private val errorResponseHandler: (ErrorResponseData) -> Unit
+    private val errorResponseHandler: (ErrorResponseData) -> Unit,
 ) : EventResponseConsumer {
     private val logger = KotlinLogging.logger { }
 
     @ExperimentalStdlibApi
-    override suspend fun consumeBlocking() = coroutineScope {
-        khomeSession.consumeEachMappedToResponse { response, frameText ->
-            when (response.type) {
-                ResponseType.EVENT -> {
-                    handleStateChangedResponse(frameText)
-                    handleEventResponse(frameText)
-                }
-                ResponseType.RESULT -> {
-                    handleSuccessResultResponse(frameText)
-                    handleErrorResultResponse(frameText)
+    override suspend fun consumeBlocking() =
+        coroutineScope {
+            khomeSession.consumeEachMappedToResponse { response, frameText ->
+                when (response.type) {
+                    ResponseType.EVENT -> {
+                        handleStateChangedResponse(frameText)
+                        handleEventResponse(frameText)
+                    }
+                    ResponseType.RESULT -> {
+                        handleSuccessResultResponse(frameText)
+                        handleErrorResultResponse(frameText)
+                    }
                 }
             }
         }
-    }
 
     private inline fun <reified Response> mapFrameTextToResponse(frameText: Frame.Text): Response =
         objectMapper.fromJson(frameText.readText())
@@ -78,11 +79,11 @@ internal class EventResponseConsumerImpl(
                 stateChangedResponse.event.data.newState.getOrNull()?.let { newState ->
                     sensorStateUpdater(
                         flattenStateAttributes(newState.asJsonObject),
-                        stateChangedResponse.event.data.entityId
+                        stateChangedResponse.event.data.entityId,
                     )
                     actuatorStateUpdater(
                         flattenStateAttributes(newState.asJsonObject),
-                        stateChangedResponse.event.data.entityId
+                        stateChangedResponse.event.data.entityId,
                     )
                 }
             }
@@ -110,8 +111,8 @@ internal class EventResponseConsumerImpl(
                 ErrorResponseHandlerImpl(errorResponseHandler).handle(
                     ErrorResponseData(
                         commandId = resultResponse.id,
-                        errorResponse = resultResponse.error!!
-                    )
+                        errorResponse = resultResponse.error!!,
+                    ),
                 )
             }
 

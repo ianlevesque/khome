@@ -28,7 +28,7 @@ internal class ActuatorImpl<S : State<*>, A : Attributes>(
     private val mapper: ObjectMapperInterface,
     private val resolver: ServiceCommandResolver<S>,
     private val stateType: KClass<*>,
-    private val attributesType: KClass<*>
+    private val attributesType: KClass<*>,
 ) : Actuator<S, A> {
     private val observers: MutableList<Observer<Actuator<S, A>>> = mutableListOf()
     override lateinit var attributes: A
@@ -49,7 +49,7 @@ internal class ActuatorImpl<S : State<*>, A : Attributes>(
                 ServiceCommandImpl(
                     domain = resolvedServiceCommand.domain,
                     service = resolvedServiceCommand.service,
-                    serviceData = resolvedServiceCommand.serviceData
+                    serviceData = resolvedServiceCommand.serviceData,
                 ).also { app.enqueueStateChange(this, it) }
             }
             field = newDesiredState
@@ -67,16 +67,19 @@ internal class ActuatorImpl<S : State<*>, A : Attributes>(
     }
 
     @KtorExperimentalAPI
-    override fun callService(service: Service, parameterBag: CommandDataWithEntityId) {
+    override fun callService(
+        service: Service,
+        parameterBag: CommandDataWithEntityId,
+    ) {
         ServiceCommandImpl(
             service = service,
-            serviceData = parameterBag
+            serviceData = parameterBag,
         ).also { app.enqueueStateChange(this, it) }
     }
 
     override fun attachObserver(observer: ObserverFunction<Actuator<S, A>>): Switchable =
         ObserverImpl(
             observer,
-            ObserverExceptionHandler(app.observerExceptionHandlerFunction)
+            ObserverExceptionHandler(app.observerExceptionHandlerFunction),
         ).also { observers.add(it) }
 }

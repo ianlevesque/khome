@@ -22,8 +22,9 @@ data class LuminanceAttributes(
     override val userId: UserId?,
     override val lastChanged: Instant,
     override val lastUpdated: Instant,
-    override val friendlyName: FriendlyName
+    override val friendlyName: FriendlyName,
 ) : Attributes
 
 fun LuminanceSensor.isBrighterThan(value: Double) = measurement.value > value
+
 fun LuminanceSensor.isDarkerThan(value: Double) = measurement.value < value

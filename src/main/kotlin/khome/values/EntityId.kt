@@ -15,7 +15,6 @@ import khome.entities.devices.Sensor
  */
 @Suppress("DataClassPrivateConstructor")
 data class EntityId private constructor(val domain: Domain, val objectId: ObjectId) {
-
     /**
      * The EntityId's string representation.
      *
@@ -25,9 +24,7 @@ data class EntityId private constructor(val domain: Domain, val objectId: Object
     override fun toString(): String = "${domain.value}.${objectId.value}"
 
     companion object : KhomeTypeAdapter<EntityId> {
-
-        fun fromPair(pair: Pair<Domain, ObjectId>) =
-            from("${pair.first}.${pair.second}")
+        fun fromPair(pair: Pair<Domain, ObjectId>) = from("${pair.first}.${pair.second}")
 
         fun fromString(value: String): EntityId {
             val parts = value.split(".")
@@ -36,8 +33,7 @@ data class EntityId private constructor(val domain: Domain, val objectId: Object
             return EntityId(Domain.from(domain), ObjectId.from(id))
         }
 
-        override fun <P> from(value: P): EntityId =
-            fromString(value as String)
+        override fun <P> from(value: P): EntityId = fromString(value as String)
 
         @Suppress("UNCHECKED_CAST")
         override fun <P> to(value: EntityId): P {

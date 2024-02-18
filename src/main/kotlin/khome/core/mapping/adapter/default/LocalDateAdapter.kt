@@ -9,7 +9,7 @@ internal class LocalDateAdapter : KhomeTypeAdapter<LocalDate> {
         return LocalDate
             .parse(
                 value as String,
-                DateTimeFormatter.ISO_DATE
+                DateTimeFormatter.ISO_DATE,
             )
     }
 

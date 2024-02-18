@@ -6,7 +6,7 @@ import mu.KotlinLogging
 
 internal class ServiceStoreInitializerImpl(
     private val khomeSession: KhomeSession,
-    private val serviceStore: ServiceStoreInterface
+    private val serviceStore: ServiceStoreInterface,
 ) : ServiceStoreInitializer {
     private val logger = KotlinLogging.logger { }
     private val servicesRequest =
@@ -18,11 +18,9 @@ internal class ServiceStoreInitializerImpl(
         storeServices(consumeServicesResponse())
     }
 
-    private suspend fun consumeServicesResponse() =
-        khomeSession.consumeSingleMessage<ServicesResponse>()
+    private suspend fun consumeServicesResponse() = khomeSession.consumeSingleMessage<ServicesResponse>()
 
-    private suspend fun sendServicesRequest() =
-        khomeSession.callWebSocketApi(servicesRequest)
+    private suspend fun sendServicesRequest() = khomeSession.callWebSocketApi(servicesRequest)
 
     private fun storeServices(servicesResponse: ServicesResponse) =
         servicesResponse.let { response ->

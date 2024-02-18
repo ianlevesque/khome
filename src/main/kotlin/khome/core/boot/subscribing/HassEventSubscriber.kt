@@ -14,7 +14,7 @@ interface HassEventSubscriber {
 internal class HassEventSubscriberImpl(
     private val khomeSession: KhomeSession,
     private val subscriptions: EventHandlerByEventType,
-    private val hassApi: HassApiClient
+    private val hassApi: HassApiClient,
 ) : HassEventSubscriber {
     private val logger = KotlinLogging.logger { }
 

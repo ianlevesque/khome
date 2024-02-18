@@ -6,8 +6,11 @@ import khome.core.mapping.KhomeTypeAdapter
 
 data class RGBColor private constructor(val red: Int, val green: Int, val blue: Int) {
     companion object : KhomeTypeAdapter<RGBColor> {
-        fun from(red: Int, green: Int, blue: Int) =
-            from(listOf(red, green, blue))
+        fun from(
+            red: Int,
+            green: Int,
+            blue: Int,
+        ) = from(listOf(red, green, blue))
 
         override fun <P> from(value: P): RGBColor {
             val integers = value as List<Int>

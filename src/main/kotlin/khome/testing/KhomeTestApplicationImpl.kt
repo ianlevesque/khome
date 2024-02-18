@@ -25,15 +25,15 @@ internal class KhomeTestApplicationImpl(
     private val actuatorsByApiName: ActuatorsByApiName,
     private val actuatorsByEntity: ActuatorsByEntity,
     private val mapper: ObjectMapperInterface,
-    private val hassAPiCommandHistory: HassAPiCommandHistory
+    private val hassAPiCommandHistory: HassAPiCommandHistory,
 ) : KhomeTestApplication {
-
     private val logger = KotlinLogging.logger { }
 
     init {
-        val testClient = module(override = true) {
-            single<HassApiClient> { HassApiTestClient(get()) }
-        }
+        val testClient =
+            module(override = true) {
+                single<HassApiClient> { HassApiTestClient(get()) }
+            }
 
         KhomeKoinContext.addModule(testClient)
     }

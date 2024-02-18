@@ -6,9 +6,8 @@ import mu.KotlinLogging
 
 internal class AuthenticatorImpl(
     private val khomeSession: KhomeSession,
-    configuration: Configuration
+    configuration: Configuration,
 ) : Authenticator {
-
     override suspend fun authenticate() =
         consumeInitialResponse()
             .let { initialResponse ->
@@ -32,11 +31,9 @@ internal class AuthenticatorImpl(
     private val authRequest =
         AuthRequest(accessToken = configuration.accessToken)
 
-    private suspend fun consumeInitialResponse() =
-        khomeSession.consumeSingleMessage<InitialResponse>()
+    private suspend fun consumeInitialResponse() = khomeSession.consumeSingleMessage<InitialResponse>()
 
-    private suspend fun consumeAuthenticationResponse() =
-        khomeSession.consumeSingleMessage<AuthResponse>()
+    private suspend fun consumeAuthenticationResponse() = khomeSession.consumeSingleMessage<AuthResponse>()
 
     private suspend fun sendAuthenticationMessage() =
         try {

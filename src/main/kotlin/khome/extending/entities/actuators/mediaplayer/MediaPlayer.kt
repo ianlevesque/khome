@@ -15,5 +15,5 @@ typealias MediaPlayer<S, A> = Actuator<S, A>
 @Suppress("FunctionName")
 inline fun <reified S : State<*>, reified A : Attributes> KhomeApplication.MediaPlayer(
     objectId: ObjectId,
-    serviceCommandResolver: ServiceCommandResolver<S>
+    serviceCommandResolver: ServiceCommandResolver<S>,
 ): MediaPlayer<S, A> = Actuator(EntityId.fromPair("media_player".domain to objectId), serviceCommandResolver)

@@ -127,8 +127,7 @@ typealias KhomeBuilder = Khome.() -> Unit
 @ExperimentalCoroutinesApi
 @ObsoleteCoroutinesApi
 @KtorExperimentalAPI
-fun khomeApplication(init: KhomeBuilder = {}): KhomeApplication =
-    KhomeImpl().apply(init).createApplication()
+fun khomeApplication(init: KhomeBuilder = {}): KhomeApplication = KhomeImpl().apply(init).createApplication()
 
 /**
  * The main application interface.
@@ -148,7 +147,7 @@ interface Khome {
     fun <T : Any, P : Any> registerTypeAdapter(
         adapter: KhomeTypeAdapter<T>,
         valueObjectType: KClass<T>,
-        primitiveType: KClass<P>
+        primitiveType: KClass<P>,
     )
 }
 
@@ -157,93 +156,94 @@ inline fun <reified T : Any, reified P : Any> Khome.registerTypeAdapter(adapter:
 
 @OptIn(ExperimentalStdlibApi::class, KtorExperimentalAPI::class, ObsoleteCoroutinesApi::class)
 private class KhomeImpl : Khome, KhomeComponent {
-
     init {
         KhomeKoinContext.startKoinApplication()
-        val module = module {
-            single<Configuration> {
-                DefaultConfiguration(
-                    name = getProperty(NAME, "Khome"),
-                    host = getProperty(HOST, "localhost"),
-                    port = getProperty(PORT, "8123").toInt(),
-                    accessToken = getProperty(ACCESS_TOKEN, "<some-fancy-access-token>"),
-                    secure = getProperty(SECURE, "false").toBoolean()
-                )
+        val module =
+            module {
+                single<Configuration> {
+                    DefaultConfiguration(
+                        name = getProperty(NAME, "Khome"),
+                        host = getProperty(HOST, "localhost"),
+                        port = getProperty(PORT, "8123").toInt(),
+                        accessToken = getProperty(ACCESS_TOKEN, "<some-fancy-access-token>"),
+                        secure = getProperty(SECURE, "false").toBoolean(),
+                    )
+                }
             }
-        }
         KhomeKoinContext.addModule(module)
     }
 
     private val config: Configuration by inject()
     private val typeAdapters: TypeAdapters = mutableMapOf()
 
-    override fun configure(builder: Configuration.() -> Unit) =
-        config.apply(builder)
+    override fun configure(builder: Configuration.() -> Unit) = config.apply(builder)
 
     override fun <T : Any, P : Any> registerTypeAdapter(
         adapter: KhomeTypeAdapter<T>,
         valueObjectType: KClass<T>,
-        primitiveType: KClass<P>
+        primitiveType: KClass<P>,
     ) {
         typeAdapters[valueObjectType] = GsonTypeAdapterBridge(adapter, primitiveType)
     }
 
     fun createApplication(): KhomeApplicationImpl {
         registerDefaultTypeAdapter()
-        val mapperModule = module {
-            single {
-                GsonBuilder().apply {
-                    setPrettyPrinting()
-                    setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                    typeAdapters.forEach { adapter ->
-                        registerTypeAdapter(adapter.key.java, adapter.value.nullSafe())
-                    }
-                }.create()!!
+        val mapperModule =
+            module {
+                single {
+                    GsonBuilder().apply {
+                        setPrettyPrinting()
+                        setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                        typeAdapters.forEach { adapter ->
+                            registerTypeAdapter(adapter.key.java, adapter.value.nullSafe())
+                        }
+                    }.create()!!
+                }
+                single<ObjectMapperInterface> { ObjectMapper(get()) }
             }
-            single<ObjectMapperInterface> { ObjectMapper(get()) }
-        }
 
         val internalModule: Module =
             module {
-
                 single<ServiceStoreInterface> { ServiceStore() }
 
                 single {
-                    val client = HttpClient(CIO) {
-                        install(JsonFeature) {
-                            serializer = GsonSerializer {
-                                setPrettyPrinting()
-                                setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                                typeAdapters.forEach { adapter ->
-                                    registerTypeAdapter(adapter.key.java, adapter.value.nullSafe())
-                                }
-                                create()!!
+                    val client =
+                        HttpClient(CIO) {
+                            install(JsonFeature) {
+                                serializer =
+                                    GsonSerializer {
+                                        setPrettyPrinting()
+                                        setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                                        typeAdapters.forEach { adapter ->
+                                            registerTypeAdapter(adapter.key.java, adapter.value.nullSafe())
+                                        }
+                                        create()!!
+                                    }
+                            }
+
+                            val config = get<Configuration>()
+
+                            defaultRequest {
+                                host = config.host
+                                port = config.port
+                                header("Authorization", "Bearer ${config.accessToken}")
+                                header("Content-Type", "application/json")
                             }
                         }
-
-                        val config = get<Configuration>()
-
-                        defaultRequest {
-                            host = config.host
-                            port = config.port
-                            header("Authorization", "Bearer ${config.accessToken}")
-                            header("Content-Type", "application/json")
-                        }
-                    }
                     RestApiClient(client)
                 }
                 single<HassClient> {
                     HassClientImpl(
                         get(),
                         WebSocketClient(HttpClient(CIO).config { install(WebSockets) }),
-                        get()
+                        get(),
                     )
                 }
                 single<Authenticator> { (khomeSession: KhomeSession) -> AuthenticatorImpl(khomeSession, get()) }
                 single<ServiceStoreInitializer> { (khomeSession: KhomeSession) ->
                     ServiceStoreInitializerImpl(
                         khomeSession,
-                        get()
+                        get(),
                     )
                 }
                 single<HassApiInitializer> { (khomeSession: KhomeSession) -> HassApiInitializerImpl(khomeSession) }
@@ -251,7 +251,7 @@ private class KhomeImpl : Khome, KhomeComponent {
                     HassEventSubscriberImpl(
                         khomeSession,
                         subscriptions,
-                        get()
+                        get(),
                     )
                 }
 
@@ -260,13 +260,13 @@ private class KhomeImpl : Khome, KhomeComponent {
                         khomeSession,
                         sensorStateUpdater,
                         actuatorStateUpdater,
-                        entityRegistrationValidation
+                        entityRegistrationValidation,
                     )
                 }
 
                 single<StateChangeEventSubscriber> { (khomeSession: KhomeSession) ->
                     StateChangeEventSubscriberImpl(
-                        khomeSession
+                        khomeSession,
                     )
                 }
 
@@ -277,7 +277,7 @@ private class KhomeImpl : Khome, KhomeComponent {
                         actuatorStateUpdater = actuatorStateUpdater,
                         objectMapper = get(),
                         eventHandlerByEventType = eventHandlerByEventType,
-                        errorResponseHandler = errorResponseHandler
+                        errorResponseHandler = errorResponseHandler,
                     )
                 }
             }

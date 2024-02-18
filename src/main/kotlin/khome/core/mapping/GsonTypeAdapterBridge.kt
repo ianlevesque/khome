@@ -8,11 +8,14 @@ import kotlin.reflect.KClass
 
 internal class GsonTypeAdapterBridge<T, P : Any>(
     private val adapter: KhomeTypeAdapter<T>,
-    private val primitiveType: KClass<P>
+    private val primitiveType: KClass<P>,
 ) : TypeAdapter<T>() {
     private val logger = KotlinLogging.logger { }
 
-    override fun write(outgoing: JsonWriter, value: T) {
+    override fun write(
+        outgoing: JsonWriter,
+        value: T,
+    ) {
         when (val result = adapter.to<P>(value)) {
             is Boolean -> outgoing.value(result as Boolean)
             is String -> outgoing.value(result as String)
@@ -82,6 +85,8 @@ internal class GsonTypeAdapterBridge<T, P : Any>(
                 adapter.from(list)
             }
             Double::class -> adapter.from(incoming.nextDouble())
-            else -> throw IllegalStateException("${primitiveType.java.simpleName} can not be converted to ${incoming.peek()}. Please check your TypeConverter definition.")
+            else -> throw IllegalStateException(
+                "${primitiveType.java.simpleName} can not be converted to ${incoming.peek()}. Please check your TypeConverter definition.",
+            )
         }
 }

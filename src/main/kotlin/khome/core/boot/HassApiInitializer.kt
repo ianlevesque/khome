@@ -10,9 +10,8 @@ import org.koin.dsl.module
 
 @OptIn(ObsoleteCoroutinesApi::class, ExperimentalStdlibApi::class, KtorExperimentalAPI::class)
 internal class HassApiInitializerImpl(
-    private val khomeSession: KhomeSession
+    private val khomeSession: KhomeSession,
 ) : HassApiInitializer {
-
     private val systemBeansModule =
         module {
             single<HassApiClient> { HassApiClientImpl(khomeSession, get(), get()) }

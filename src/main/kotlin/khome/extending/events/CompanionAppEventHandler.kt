@@ -13,41 +13,31 @@ fun KhomeApplication.attachIosActionHandler(eventHandler: EventHandlerFunction<I
 data class IosActionEventData(
     @SerializedName("sourceDeviceID")
     val sourceDeviceID: String,
-
     @SerializedName("actionID")
     val actionID: String,
-
     @SerializedName("actionName")
     val actionName: String,
-
     @SerializedName("sourceDeviceName")
     val sourceDeviceName: String,
-
     @SerializedName("sourceDevicePermanentID")
     val sourceDevicePermanentID: String,
-
     @SerializedName("triggerSource")
-    val triggerSource: String
+    val triggerSource: String,
 )
 
 data class IosNotificationActionEventData<AD>(
     @SerializedName("sourceDeviceName")
     val sourceDeviceName: String,
-
     @SerializedName("sourceDeviceID")
     val sourceDeviceID: String,
-
     @SerializedName("actionName")
     val actionName: String,
-
     @SerializedName("sourceDevicePermanentID")
     val sourceDevicePermanentID: String?,
-
     @SerializedName("textInput")
     val textInput: String?,
-
     @SerializedName("action_data")
-    val actionData: AD?
+    val actionData: AD?,
 )
 
 fun <AD> KhomeApplication.attachIosNotificationActionHandler(eventHandler: EventHandlerFunction<IosNotificationActionEventData<AD>>) =
@@ -55,7 +45,7 @@ fun <AD> KhomeApplication.attachIosNotificationActionHandler(eventHandler: Event
 
 internal enum class IosEventType(val value: String) {
     ACTION_FIRED("ios.action_fired"),
-    NOTIFICATION_ACTION_FIRED("ios.notification_action_fired")
+    NOTIFICATION_ACTION_FIRED("ios.notification_action_fired"),
 }
 
 internal val IosEventType.eventType

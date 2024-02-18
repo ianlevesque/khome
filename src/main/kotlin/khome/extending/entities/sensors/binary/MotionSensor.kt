@@ -21,7 +21,7 @@ data class MotionSensorAttributes(
     override val userId: UserId?,
     override val friendlyName: FriendlyName,
     override val lastChanged: Instant,
-    override val lastUpdated: Instant
+    override val lastUpdated: Instant,
 ) : Attributes
 
 inline fun MotionSensor.onMotionAlarm(crossinline f: MotionSensor.(Switchable) -> Unit) =

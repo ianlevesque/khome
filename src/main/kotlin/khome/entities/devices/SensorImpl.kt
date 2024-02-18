@@ -21,7 +21,7 @@ internal class SensorImpl<S : State<*>, A : Attributes>(
     private val app: KhomeApplicationImpl,
     private val mapper: ObjectMapperInterface,
     private val stateType: KClass<*>,
-    private val attributesType: KClass<*>
+    private val attributesType: KClass<*>,
 ) : Sensor<S, A> {
     private val observers: MutableList<Observer<Sensor<S, A>>> = mutableListOf()
     override lateinit var attributes: A
@@ -37,7 +37,7 @@ internal class SensorImpl<S : State<*>, A : Attributes>(
     override fun attachObserver(observer: ObserverFunction<Sensor<S, A>>): Switchable =
         ObserverImpl(
             observer,
-            ObserverExceptionHandler(app.observerExceptionHandlerFunction)
+            ObserverExceptionHandler(app.observerExceptionHandlerFunction),
         ).also { observers.add(it) }
 
     @ObsoleteCoroutinesApi

@@ -6,6 +6,7 @@ import khome.values.EntityId
 import java.time.OffsetDateTime
 
 internal data class ResolverResponse(val id: Int, val type: ResponseType) : MessageInterface
+
 internal data class StateChangedResponse(val id: Int, val type: ResponseType, val event: StateChangedEventData) :
     MessageInterface
 
@@ -13,7 +14,7 @@ internal data class StateChangedEventData(
     override val eventType: String,
     val data: StateChangedData,
     override val timeFired: OffsetDateTime,
-    override val origin: String
+    override val origin: String,
 ) : MessageInterface, EventDtoInterface
 
 internal data class StateChangedData(val entityId: EntityId, val newState: JsonElement) :
@@ -30,15 +31,16 @@ internal data class StateResponse(
     val lastChanged: OffsetDateTime,
     val state: Any,
     val attributes: JsonElement,
-    val lastUpdated: OffsetDateTime
+    val lastUpdated: OffsetDateTime,
 )
 
 internal data class EventResponse(val id: Int, val type: ResponseType, val event: Event)
+
 internal data class Event(
     override val eventType: String,
     val data: JsonElement,
     override val timeFired: OffsetDateTime,
-    override val origin: String
+    override val origin: String,
 ) : MessageInterface, EventDtoInterface
 
 internal data class ResultResponse(
@@ -46,7 +48,7 @@ internal data class ResultResponse(
     val type: String,
     val success: Boolean,
     val error: ErrorResponse?,
-    val result: Any?
+    val result: Any?,
 ) : MessageInterface
 
 internal enum class ResponseType {
@@ -54,5 +56,5 @@ internal enum class ResponseType {
     EVENT,
 
     @SerializedName("result")
-    RESULT
+    RESULT,
 }

@@ -13,5 +13,5 @@ import khome.values.domain
 @Suppress("FunctionName")
 inline fun <reified S : State<*>, reified A : Attributes> KhomeApplication.ClimateControl(
     objectId: ObjectId,
-    serviceCommandResolver: ServiceCommandResolver<S>
+    serviceCommandResolver: ServiceCommandResolver<S>,
 ): Actuator<S, A> = Actuator(EntityId.fromPair("climate".domain to objectId), serviceCommandResolver)

@@ -53,10 +53,9 @@ internal typealias ApplicationReadyCallbacks = MutableList<KhomeApplication.() -
     ExperimentalStdlibApi::class,
     KtorExperimentalAPI::class,
     ObsoleteCoroutinesApi::class,
-    ExperimentalCoroutinesApi::class
+    ExperimentalCoroutinesApi::class,
 )
 internal class KhomeApplicationImpl : KhomeApplication {
-
     private val logger = KotlinLogging.logger { }
     private val hassClient: HassClient by KoinContainer.inject()
     private val hassApi: HassApiClient by KoinContainer.inject()
@@ -80,28 +79,29 @@ internal class KhomeApplicationImpl : KhomeApplication {
     }
 
     var errorResponseHandlerFunction: (ErrorResponseData) -> Unit = { errorResponseData ->
-        logger.error { "CommandId: ${errorResponseData.commandId} - errorCode: ${errorResponseData.errorResponse.code} | message: ${errorResponseData.errorResponse.message}" }
+        logger.error {
+            "CommandId: ${errorResponseData.commandId} - errorCode: ${errorResponseData.errorResponse.code} | message: ${errorResponseData.errorResponse.message}"
+        }
     }
 
     override fun <S : State<*>, A : Attributes> Sensor(
         id: EntityId,
         stateType: KClass<*>,
-        attributesType: KClass<*>
-    ): Sensor<S, A> =
-        SensorImpl<S, A>(this, mapper, stateType, attributesType).also { registerSensor(id, it) }
+        attributesType: KClass<*>,
+    ): Sensor<S, A> = SensorImpl<S, A>(this, mapper, stateType, attributesType).also { registerSensor(id, it) }
 
     override fun <S : State<*>, A : Attributes> Actuator(
         id: EntityId,
         stateType: KClass<*>,
         attributesType: KClass<*>,
-        serviceCommandResolver: ServiceCommandResolver<S>
+        serviceCommandResolver: ServiceCommandResolver<S>,
     ): Actuator<S, A> =
         ActuatorImpl<S, A>(
             this,
             mapper,
             serviceCommandResolver,
             stateType,
-            attributesType
+            attributesType,
         ).also { registerActuator(id, it) }
 
     override fun setObserverExceptionHandler(f: (Throwable) -> Unit) {
@@ -112,10 +112,10 @@ internal class KhomeApplicationImpl : KhomeApplication {
     override fun <ED> attachEventHandler(
         eventType: EventType,
         eventDataType: KClass<*>,
-        eventHandler: EventHandlerFunction<ED>
+        eventHandler: EventHandlerFunction<ED>,
     ): Switchable =
         eventSubscriptionsByEventType[eventType]?.attachEventHandler(
-            eventHandler as EventHandlerFunction<Any?>
+            eventHandler as EventHandlerFunction<Any?>,
         )
             ?: registerEventSubscription<ED>(eventType, eventDataType).attachEventHandler(eventHandler)
 
@@ -123,7 +123,10 @@ internal class KhomeApplicationImpl : KhomeApplication {
         eventHandlerExceptionHandlerFunction = f
     }
 
-    override fun emitEvent(eventType: String, eventData: Any?) {
+    override fun emitEvent(
+        eventType: String,
+        eventData: Any?,
+    ) {
         hassApi.emitEvent(eventType, eventData)
     }
 
@@ -131,33 +134,45 @@ internal class KhomeApplicationImpl : KhomeApplication {
         errorResponseHandlerFunction = errorResponseHandler
     }
 
-    override fun <PB> callService(domain: Domain, service: Service, parameterBag: PB) {
+    override fun <PB> callService(
+        domain: Domain,
+        service: Service,
+        parameterBag: PB,
+    ) {
         ServiceCommandImpl(
             domain = domain,
             service = service,
-            serviceData = parameterBag
+            serviceData = parameterBag,
         ).also { hassApi.sendCommand(it) }
     }
 
-    private fun registerSensor(entityId: EntityId, sensor: SensorImpl<*, *>) {
+    private fun registerSensor(
+        entityId: EntityId,
+        sensor: SensorImpl<*, *>,
+    ) {
         check(!sensorsByApiName.containsKey(entityId)) { "Sensor with id: $entityId already exists." }
         sensorsByApiName[entityId] = sensor
         logger.info { "Registered Sensor with id: $entityId" }
     }
 
-    private fun registerActuator(entityId: EntityId, actuator: ActuatorImpl<*, *>) {
+    private fun registerActuator(
+        entityId: EntityId,
+        actuator: ActuatorImpl<*, *>,
+    ) {
         check(!actuatorsByApiName.containsKey(entityId)) { "Actuator with id: $entityId already exists." }
         actuatorsByApiName[entityId] = actuator
         actuatorsByEntity[actuator] = entityId
         logger.info { "Registered Actuator with id: $entityId" }
     }
 
-    private fun <ED> registerEventSubscription(eventType: EventType, eventDataType: KClass<*>) =
-        EventSubscription<ED>(this, mapper, eventDataType).also { eventSubscriptionsByEventType[eventType] = it }
+    private fun <ED> registerEventSubscription(
+        eventType: EventType,
+        eventDataType: KClass<*>,
+    ) = EventSubscription<ED>(this, mapper, eventDataType).also { eventSubscriptionsByEventType[eventType] = it }
 
     internal fun <S : State<*>, SA : Attributes> enqueueStateChange(
         actuator: ActuatorImpl<S, SA>,
-        commandImpl: ServiceCommandImpl<CommandDataWithEntityId>
+        commandImpl: ServiceCommandImpl<CommandDataWithEntityId>,
     ) {
         val entityId = actuatorsByEntity[actuator] ?: throw RuntimeException("Entity not registered: $actuator")
         commandImpl.apply {
@@ -187,7 +202,7 @@ internal class KhomeApplicationImpl : KhomeApplication {
                         this,
                         SensorStateUpdater(sensorsByApiName),
                         ActuatorStateUpdater(actuatorsByApiName),
-                        EntityRegistrationValidation(actuatorsByApiName, sensorsByApiName)
+                        EntityRegistrationValidation(actuatorsByApiName, sensorsByApiName),
                     )
                 }
 
@@ -198,7 +213,7 @@ internal class KhomeApplicationImpl : KhomeApplication {
                         SensorStateUpdater(sensorsByApiName),
                         ActuatorStateUpdater(actuatorsByApiName),
                         eventSubscriptionsByEventType,
-                        errorResponseHandlerFunction
+                        errorResponseHandlerFunction,
                     )
                 }
 
@@ -215,13 +230,14 @@ internal class KhomeApplicationImpl : KhomeApplication {
 
     override fun runTesting(block: KhomeTestApplication.() -> Unit) {
         applicationReadyCallbacks.forEach { it.invoke(this@KhomeApplicationImpl) }
-        val testApp = KhomeTestApplicationImpl(
-            sensorsByApiName,
-            actuatorsByApiName,
-            actuatorsByEntity,
-            mapper,
-            hassAPiCommandHistory
-        ).apply(block)
+        val testApp =
+            KhomeTestApplicationImpl(
+                sensorsByApiName,
+                actuatorsByApiName,
+                actuatorsByEntity,
+                mapper,
+                hassAPiCommandHistory,
+            ).apply(block)
         testApp.reset()
     }
 }

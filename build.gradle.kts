@@ -7,7 +7,7 @@ plugins {
     id("org.jetbrains.dokka") version "1.9.10"
     `maven-publish`
     id("io.gitlab.arturbosch.detekt") version "1.23.5"
-    id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
 }
 
 group = "com.dennisschroeder"
@@ -21,6 +21,7 @@ repositories {
 }
 
 val ktorVersion: String by project
+val ktlintVersion: String by project
 val koinVersion: String by project
 val mockkVersion: String by project
 val jupiterVersion: String by project
@@ -103,6 +104,6 @@ detekt {
 }
 
 ktlint {
-    version.set("0.44.0")
+    version.set(ktlintVersion)
     ignoreFailures.set(false)
 }

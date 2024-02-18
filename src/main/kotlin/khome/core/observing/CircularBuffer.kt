@@ -4,6 +4,7 @@ import java.util.LinkedList
 
 interface CircularBufferInterface<E> {
     fun addFirst(e: E)
+
     val last: E?
     val first: E?
     val snapshot: List<E>

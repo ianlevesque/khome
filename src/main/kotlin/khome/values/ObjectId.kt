@@ -4,7 +4,6 @@ import khome.core.mapping.KhomeTypeAdapter
 
 @Suppress("DataClassPrivateConstructor")
 data class ObjectId private constructor(val value: String) {
-
     override fun toString(): String = value
 
     companion object : KhomeTypeAdapter<ObjectId> {

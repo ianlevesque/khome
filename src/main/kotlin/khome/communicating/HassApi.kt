@@ -37,7 +37,7 @@ internal enum class CommandType {
     GET_SERVICES,
 
     @SerializedName("get_states")
-    GET_STATES
+    GET_STATES,
 }
 
 interface CommandDataWithEntityId {
@@ -67,7 +67,7 @@ internal data class ServiceCommandImpl<SD>(
     val service: Service,
     override var id: Int? = null,
     val serviceData: SD? = null,
-    override val type: CommandType = CALL_SERVICE
+    override val type: CommandType = CALL_SERVICE,
 ) : HassApiCommand
 
 @KtorExperimentalAPI
@@ -75,7 +75,7 @@ internal data class ServiceCommandImpl<SD>(
 internal class HassApiClientImpl(
     private val khomeSession: KhomeSession,
     private val objectMapper: ObjectMapperInterface,
-    private val restApiClient: RestApiClient
+    private val restApiClient: RestApiClient,
 ) : HassApiClient {
     private val logger = KotlinLogging.logger { }
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -89,7 +89,10 @@ internal class HassApiClientImpl(
             }
         }
 
-    override fun emitEvent(eventType: String, eventData: Any?) {
+    override fun emitEvent(
+        eventType: String,
+        eventData: Any?,
+    ) {
         coroutineScope.launch {
             restApiClient.post<HttpResponse> {
                 url { encodedPath = "/api/events/$eventType" }
@@ -98,17 +101,27 @@ internal class HassApiClientImpl(
         }
     }
 
-    override fun emitEventAsync(eventType: String, eventData: Any?) =
-        coroutineScope.async {
-            restApiClient.post<HttpResponse> {
-                url { encodedPath = "/api/events/$eventType" }
-                body = eventData ?: EmptyContent
-            }
+    override fun emitEventAsync(
+        eventType: String,
+        eventData: Any?,
+    ) = coroutineScope.async {
+        restApiClient.post<HttpResponse> {
+            url { encodedPath = "/api/events/$eventType" }
+            body = eventData ?: EmptyContent
         }
+    }
 }
 
 internal interface HassApiClient {
     fun sendCommand(command: HassApiCommand): Job
-    fun emitEvent(eventType: String, eventData: Any?)
-    fun emitEventAsync(eventType: String, eventData: Any?): Deferred<HttpResponse>
+
+    fun emitEvent(
+        eventType: String,
+        eventData: Any?,
+    )
+
+    fun emitEventAsync(
+        eventType: String,
+        eventData: Any?,
+    ): Deferred<HttpResponse>
 }

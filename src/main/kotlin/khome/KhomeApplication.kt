@@ -46,7 +46,7 @@ interface KhomeApplication {
     fun <S : State<*>, A : Attributes> Sensor(
         id: EntityId,
         stateType: KClass<*>,
-        attributesType: KClass<*>
+        attributesType: KClass<*>,
     ): Sensor<S, A>
 
     /**
@@ -68,7 +68,7 @@ interface KhomeApplication {
         id: EntityId,
         stateType: KClass<*>,
         attributesType: KClass<*>,
-        serviceCommandResolver: ServiceCommandResolver<S>
+        serviceCommandResolver: ServiceCommandResolver<S>,
     ): Actuator<S, A>
 
     /**
@@ -84,7 +84,7 @@ interface KhomeApplication {
     fun <ED> attachEventHandler(
         eventType: EventType,
         eventDataType: KClass<*>,
-        eventHandler: EventHandlerFunction<ED>
+        eventHandler: EventHandlerFunction<ED>,
     ): Switchable
 
     /**
@@ -100,7 +100,10 @@ interface KhomeApplication {
      * @param eventType the type of event to emit.
      * @param eventData the data to be send with the event (optional).
      */
-    fun emitEvent(eventType: String, eventData: Any? = null)
+    fun emitEvent(
+        eventType: String,
+        eventData: Any? = null,
+    )
 
     /**
      * Attaches an error response handler to Khome.
@@ -116,7 +119,11 @@ interface KhomeApplication {
      * @param service the name of the service to call
      * @param parameterBag the parameters to be send with the command
      */
-    fun <PB> callService(domain: Domain, service: Service, parameterBag: PB)
+    fun <PB> callService(
+        domain: Domain,
+        service: Service,
+        parameterBag: PB,
+    )
 
     /**
      * Gets executed when the application did all checks and set all initial states

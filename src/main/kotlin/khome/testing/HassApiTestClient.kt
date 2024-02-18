@@ -9,7 +9,7 @@ import kotlinx.coroutines.Job
 import mu.KotlinLogging
 
 internal class HassApiTestClient(
-    private val mapper: ObjectMapper
+    private val mapper: ObjectMapper,
 ) : HassApiClient {
     private val logger = KotlinLogging.logger { }
 
@@ -21,11 +21,17 @@ internal class HassApiTestClient(
         return Job()
     }
 
-    override fun emitEvent(eventType: String, eventData: Any?) {
+    override fun emitEvent(
+        eventType: String,
+        eventData: Any?,
+    ) {
         TODO("Not yet implemented")
     }
 
-    override fun emitEventAsync(eventType: String, eventData: Any?): Deferred<HttpResponse> {
+    override fun emitEventAsync(
+        eventType: String,
+        eventData: Any?,
+    ): Deferred<HttpResponse> {
         TODO("Not yet implemented")
     }
 }

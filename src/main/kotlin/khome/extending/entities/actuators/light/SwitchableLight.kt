@@ -15,5 +15,5 @@ fun KhomeApplication.SwitchableLight(objectId: ObjectId): SwitchableLight =
         objectId,
         ServiceCommandResolver { desiredState ->
             mapSwitchable(desiredState.value)
-        }
+        },
     )

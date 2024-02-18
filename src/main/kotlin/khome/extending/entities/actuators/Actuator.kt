@@ -14,7 +14,7 @@ import khome.values.Service
 
 fun <S : State<*>, A : Attributes> Actuator<S, A>.callService(
     service: Service,
-    parameterBag: CommandDataWithEntityId = EntityIdOnlyServiceData()
+    parameterBag: CommandDataWithEntityId = EntityIdOnlyServiceData(),
 ) = callService(service, parameterBag)
 
 fun <S : State<*>, A : Attributes, SV> Actuator<S, A>.stateValueChangedFrom(values: Pair<SV, SV>) =
@@ -39,24 +39,24 @@ fun <A : Attributes> Actuator<SwitchableState, A>.turnOff() {
 
 inline fun <S : State<*>, A : Attributes, SV> Actuator<S, A>.onStateValueChangedFrom(
     values: Pair<SV, SV>,
-    crossinline f: Actuator<S, A>.(Switchable) -> Unit
+    crossinline f: Actuator<S, A>.(Switchable) -> Unit,
 ) = attachObserver {
-    if (stateValueChangedFrom(values))
+    if (stateValueChangedFrom(values)) {
         f(this, it)
+    }
 }
 
 inline fun <S : State<*>, A : Attributes, SV> Actuator<S, A>.onStateValueChangedFrom(
     values: Triple<SV, SV, SV>,
-    crossinline f: Actuator<S, A>.(Switchable) -> Unit
+    crossinline f: Actuator<S, A>.(Switchable) -> Unit,
 ) = attachObserver {
-    if (stateValueChangedFrom(values))
+    if (stateValueChangedFrom(values)) {
         f(this, it)
+    }
 }
 
-inline fun <A : Attributes> Actuator<SwitchableState, A>.onTurnedOn(
-    crossinline f: Actuator<SwitchableState, A>.(Switchable) -> Unit
-) = onStateValueChangedFrom(SwitchableValue.OFF to SwitchableValue.ON, f)
+inline fun <A : Attributes> Actuator<SwitchableState, A>.onTurnedOn(crossinline f: Actuator<SwitchableState, A>.(Switchable) -> Unit) =
+    onStateValueChangedFrom(SwitchableValue.OFF to SwitchableValue.ON, f)
 
-inline fun <A : Attributes> Actuator<SwitchableState, A>.onTurnedOff(
-    crossinline f: Actuator<SwitchableState, A>.(Switchable) -> Unit
-) = onStateValueChangedFrom(SwitchableValue.ON to SwitchableValue.OFF, f)
+inline fun <A : Attributes> Actuator<SwitchableState, A>.onTurnedOff(crossinline f: Actuator<SwitchableState, A>.(Switchable) -> Unit) =
+    onStateValueChangedFrom(SwitchableValue.ON to SwitchableValue.OFF, f)

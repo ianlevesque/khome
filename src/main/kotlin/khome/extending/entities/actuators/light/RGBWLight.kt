@@ -30,7 +30,7 @@ fun KhomeApplication.RGBWLight(objectId: ObjectId): RGBWLight =
                 SwitchableValue.OFF -> {
                     DefaultResolvedServiceCommand(
                         service = "turn_off".service,
-                        serviceData = EntityIdOnlyServiceData()
+                        serviceData = EntityIdOnlyServiceData(),
                     )
                 }
 
@@ -38,49 +38,54 @@ fun KhomeApplication.RGBWLight(objectId: ObjectId): RGBWLight =
                     desiredState.colorTemp?.let {
                         DefaultResolvedServiceCommand(
                             service = "turn_on".service,
-                            serviceData = RGBWLightServiceData(
-                                colorTemp = it
-                            )
+                            serviceData =
+                                RGBWLightServiceData(
+                                    colorTemp = it,
+                                ),
                         )
                     } ?: desiredState.hsColor?.let {
                         DefaultResolvedServiceCommand(
                             service = "turn_on".service,
-                            serviceData = RGBWLightServiceData(
-                                hsColor = it
-                            )
+                            serviceData =
+                                RGBWLightServiceData(
+                                    hsColor = it,
+                                ),
                         )
                     } ?: desiredState.rgbColor?.let {
                         DefaultResolvedServiceCommand(
                             service = "turn_on".service,
-                            serviceData = RGBWLightServiceData(
-                                rgbColor = it
-                            )
+                            serviceData =
+                                RGBWLightServiceData(
+                                    rgbColor = it,
+                                ),
                         )
                     } ?: desiredState.brightness?.let {
                         DefaultResolvedServiceCommand(
                             service = "turn_on".service,
-                            serviceData = RGBWLightServiceData(
-                                brightness = it
-                            )
+                            serviceData =
+                                RGBWLightServiceData(
+                                    brightness = it,
+                                ),
                         )
                     } ?: desiredState.xyColor?.let {
                         DefaultResolvedServiceCommand(
                             service = "turn_on".service,
-                            serviceData = RGBWLightServiceData(
-                                xyColor = it
-                            )
+                            serviceData =
+                                RGBWLightServiceData(
+                                    xyColor = it,
+                                ),
                         )
                     }
 
                         ?: DefaultResolvedServiceCommand(
                             service = "turn_on".service,
-                            serviceData = EntityIdOnlyServiceData()
+                            serviceData = EntityIdOnlyServiceData(),
                         )
                 }
 
                 SwitchableValue.UNAVAILABLE -> throw IllegalStateException("State cannot be changed to UNAVAILABLE")
             }
-        }
+        },
     )
 
 data class RGBWLightServiceData(
@@ -88,7 +93,7 @@ data class RGBWLightServiceData(
     private val hsColor: HSColor? = null,
     private val rgbColor: RGBColor? = null,
     private val xyColor: XYColor? = null,
-    private val colorTemp: ColorTemperature? = null
+    private val colorTemp: ColorTemperature? = null,
 ) : DesiredServiceData()
 
 data class RGBWLightState(
@@ -97,7 +102,7 @@ data class RGBWLightState(
     val hsColor: HSColor? = null,
     val rgbColor: RGBColor? = null,
     val xyColor: XYColor? = null,
-    val colorTemp: ColorTemperature? = null
+    val colorTemp: ColorTemperature? = null,
 ) : State<SwitchableValue>
 
 val RGBWLight.isOn
@@ -118,15 +123,25 @@ fun RGBWLight.setBrightness(level: Brightness) {
     desiredState = RGBWLightState(SwitchableValue.ON, level)
 }
 
-fun RGBWLight.setRGB(red: Int, green: Int, blue: Int) {
+fun RGBWLight.setRGB(
+    red: Int,
+    green: Int,
+    blue: Int,
+) {
     desiredState = RGBWLightState(SwitchableValue.ON, rgbColor = RGBColor.from(red, green, blue))
 }
 
-fun RGBWLight.setHS(hue: Double, saturation: Double) {
+fun RGBWLight.setHS(
+    hue: Double,
+    saturation: Double,
+) {
     desiredState = RGBWLightState(SwitchableValue.ON, hsColor = HSColor.from(hue, saturation))
 }
 
-fun RGBWLight.setXY(x: Double, y: Double) {
+fun RGBWLight.setXY(
+    x: Double,
+    y: Double,
+) {
     desiredState = RGBWLightState(SwitchableValue.ON, xyColor = XYColor.from(x, y))
 }
 
@@ -141,8 +156,6 @@ fun RGBWLight.setColor(name: ColorName) {
     callService("turn_on".service, NamedColorServiceData(name))
 }
 
-fun RGBWLight.onTurnedOn(f: RGBWLight.(Switchable) -> Unit) =
-    onStateValueChangedFrom(SwitchableValue.OFF to SwitchableValue.ON, f)
+fun RGBWLight.onTurnedOn(f: RGBWLight.(Switchable) -> Unit) = onStateValueChangedFrom(SwitchableValue.OFF to SwitchableValue.ON, f)
 
-fun RGBWLight.onTurnedOff(f: RGBWLight.(Switchable) -> Unit) =
-    onStateValueChangedFrom(SwitchableValue.ON to SwitchableValue.OFF, f)
+fun RGBWLight.onTurnedOff(f: RGBWLight.(Switchable) -> Unit) = onStateValueChangedFrom(SwitchableValue.ON to SwitchableValue.OFF, f)

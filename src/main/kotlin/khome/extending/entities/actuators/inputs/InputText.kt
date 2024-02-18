@@ -27,11 +27,12 @@ fun KhomeApplication.InputText(objectId: ObjectId): InputText =
         ServiceCommandResolver { desiredState ->
             DefaultResolvedServiceCommand(
                 service = "set_value".service,
-                serviceData = SettableStateValueServiceData(
-                    desiredState.value
-                )
+                serviceData =
+                    SettableStateValueServiceData(
+                        desiredState.value,
+                    ),
             )
-        }
+        },
     )
 
 data class InputTextState(override val value: String) : State<String>
@@ -45,5 +46,5 @@ data class InputTextAttributes(
     override val userId: UserId?,
     override val friendlyName: FriendlyName,
     override val lastChanged: Instant,
-    override val lastUpdated: Instant
+    override val lastUpdated: Instant,
 ) : Attributes

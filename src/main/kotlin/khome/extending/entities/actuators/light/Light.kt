@@ -19,7 +19,7 @@ import java.time.Instant
 @Suppress("FunctionName")
 inline fun <reified S : State<*>, reified A : Attributes> KhomeApplication.Light(
     objectId: ObjectId,
-    serviceCommandResolver: ServiceCommandResolver<S>
+    serviceCommandResolver: ServiceCommandResolver<S>,
 ): Actuator<S, A> = Actuator(EntityId.fromPair("light".domain to objectId), serviceCommandResolver)
 
 data class LightAttributes(
@@ -27,8 +27,9 @@ data class LightAttributes(
     override val userId: UserId?,
     override val friendlyName: FriendlyName,
     override val lastChanged: Instant,
-    override val lastUpdated: Instant
+    override val lastUpdated: Instant,
 ) : Attributes
 
 data class NamedColorServiceData(val color_name: ColorName) : DesiredServiceData()
+
 data class KelvinServiceData(val kelvin: ColorTemperature) : DesiredServiceData()

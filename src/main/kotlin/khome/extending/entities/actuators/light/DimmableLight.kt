@@ -24,36 +24,39 @@ fun KhomeApplication.DimmableLight(objectId: ObjectId): DimmableLight =
         ServiceCommandResolver { desiredState ->
             when (desiredState.value) {
                 SwitchableValue.OFF -> {
-                    val resolvedServiceCommand: ResolvedServiceCommand = desiredState.brightness?.let { brightness ->
-                        DefaultResolvedServiceCommand(
-                            service = "turn_on".service,
-                            serviceData = DimmableLightServiceData(
-                                brightness
+                    val resolvedServiceCommand: ResolvedServiceCommand =
+                        desiredState.brightness?.let { brightness ->
+                            DefaultResolvedServiceCommand(
+                                service = "turn_on".service,
+                                serviceData =
+                                    DimmableLightServiceData(
+                                        brightness,
+                                    ),
                             )
+                        } ?: DefaultResolvedServiceCommand(
+                            service = "turn_off".service,
+                            serviceData = EntityIdOnlyServiceData(),
                         )
-                    } ?: DefaultResolvedServiceCommand(
-                        service = "turn_off".service,
-                        serviceData = EntityIdOnlyServiceData()
-                    )
                     resolvedServiceCommand
                 }
                 SwitchableValue.ON -> {
                     desiredState.brightness?.let { brightness ->
                         DefaultResolvedServiceCommand(
                             service = "turn_on".service,
-                            serviceData = DimmableLightServiceData(
-                                brightness
-                            )
+                            serviceData =
+                                DimmableLightServiceData(
+                                    brightness,
+                                ),
                         )
                     } ?: DefaultResolvedServiceCommand(
                         service = "turn_on".service,
-                        serviceData = EntityIdOnlyServiceData()
+                        serviceData = EntityIdOnlyServiceData(),
                     )
                 }
 
                 SwitchableValue.UNAVAILABLE -> throw IllegalStateException("State cannot be changed to UNAVAILABLE")
             }
-        }
+        },
     )
 
 data class DimmableLightState(override val value: SwitchableValue, val brightness: Brightness? = null) : State<SwitchableValue>
@@ -80,12 +83,14 @@ fun DimmableLight.setBrightness(level: Brightness) {
 
 fun DimmableLight.onTurnedOn(f: DimmableLight.(Switchable) -> Unit) =
     attachObserver {
-        if (stateValueChangedFrom(SwitchableValue.OFF to SwitchableValue.ON))
+        if (stateValueChangedFrom(SwitchableValue.OFF to SwitchableValue.ON)) {
             f(this, it)
+        }
     }
 
 fun DimmableLight.onTurnedOff(f: DimmableLight.(Switchable) -> Unit) =
     attachObserver {
-        if (stateValueChangedFrom(SwitchableValue.ON to SwitchableValue.OFF))
+        if (stateValueChangedFrom(SwitchableValue.ON to SwitchableValue.OFF)) {
             f(this, it)
+        }
     }

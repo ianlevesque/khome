@@ -9,5 +9,6 @@ class RestApiClient(delegate: HttpClient) {
     val underlyingClient = delegate
 
     suspend inline fun <reified T> get(block: HttpRequestBuilder.() -> Unit = {}): T = underlyingClient.get(block = block)
+
     suspend inline fun <reified T> post(block: HttpRequestBuilder.() -> Unit = {}): T = underlyingClient.post(block = block)
 }

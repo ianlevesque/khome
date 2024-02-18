@@ -25,14 +25,14 @@ enum class ContactStateValue {
     OPEN,
 
     @SerializedName("closed")
-    CLOSED
+    CLOSED,
 }
 
 data class ContactAttributes(
     override val userId: UserId?,
     override val lastChanged: Instant,
     override val lastUpdated: Instant,
-    override val friendlyName: FriendlyName
+    override val friendlyName: FriendlyName,
 ) : Attributes
 
 val ContactSensor.isOpen

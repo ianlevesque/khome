@@ -6,9 +6,8 @@ import khome.core.ResultResponse
 import mu.KotlinLogging
 
 internal class StateChangeEventSubscriberImpl(
-    val khomeSession: KhomeSession
+    val khomeSession: KhomeSession,
 ) : StateChangeEventSubscriber {
-
     private val logger = KotlinLogging.logger { }
     private val id
         get() = CALLER_ID.incrementAndGet()
@@ -26,11 +25,9 @@ internal class StateChangeEventSubscriberImpl(
     private val eventListenerRequest =
         EventListeningRequest(id = id, eventType = "state_changed")
 
-    private suspend fun sendEventListenerRequest() =
-        khomeSession.callWebSocketApi(eventListenerRequest)
+    private suspend fun sendEventListenerRequest() = khomeSession.callWebSocketApi(eventListenerRequest)
 
-    private suspend fun consumeResultResponse() =
-        khomeSession.consumeSingleMessage<ResultResponse>()
+    private suspend fun consumeResultResponse() = khomeSession.consumeSingleMessage<ResultResponse>()
 }
 
 interface StateChangeEventSubscriber {

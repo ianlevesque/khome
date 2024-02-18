@@ -34,7 +34,7 @@ fun KhomeApplication.Thermostat(objectId: ObjectId): Thermostat {
                 ThermostatStateValue.OFF -> {
                     DefaultResolvedServiceCommand(
                         service = "turn_off".service,
-                        serviceData = EntityIdOnlyServiceData()
+                        serviceData = EntityIdOnlyServiceData(),
                     )
                 }
 
@@ -42,27 +42,27 @@ fun KhomeApplication.Thermostat(objectId: ObjectId): Thermostat {
                     desiredState.temperature?.let { temperature ->
                         DefaultResolvedServiceCommand(
                             service = "set_temperature".service,
-                            serviceData = ThermostatServiceData(temperature, hvacMode = "heat".hvacMode)
+                            serviceData = ThermostatServiceData(temperature, hvacMode = "heat".hvacMode),
                         )
                     } ?: (if (desiredState.presetMode.isNone) null else desiredState.presetMode)?.let { preset ->
                         DefaultResolvedServiceCommand(
                             service = "set_preset_mode".service,
-                            serviceData = ThermostatServiceData(presetMode = preset)
+                            serviceData = ThermostatServiceData(presetMode = preset),
                         )
                     } ?: DefaultResolvedServiceCommand(
                         service = "turn_on".service,
-                        serviceData = EntityIdOnlyServiceData()
+                        serviceData = EntityIdOnlyServiceData(),
                     )
                 }
             }
-        }
+        },
     )
 }
 
 data class ThermostatState(
     override val value: ThermostatStateValue,
     val temperature: Temperature? = null,
-    val presetMode: PresetMode = "none".presetMode
+    val presetMode: PresetMode = "none".presetMode,
 ) : State<ThermostatStateValue>
 
 data class ThermostatAttributes(
@@ -74,7 +74,7 @@ data class ThermostatAttributes(
     override val friendlyName: FriendlyName,
     override val lastChanged: Instant,
     override val lastUpdated: Instant,
-    override val userId: UserId?
+    override val userId: UserId?,
 ) : Attributes
 
 enum class ThermostatStateValue {
@@ -82,13 +82,13 @@ enum class ThermostatStateValue {
     HEAT,
 
     @SerializedName("off")
-    OFF
+    OFF,
 }
 
 data class ThermostatServiceData(
     val temperature: Temperature? = null,
     val presetMode: PresetMode? = null,
-    val hvacMode: HvacMode? = null
+    val hvacMode: HvacMode? = null,
 ) : DesiredServiceData()
 
 val Thermostat.isHeating

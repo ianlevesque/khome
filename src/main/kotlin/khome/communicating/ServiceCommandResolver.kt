@@ -27,5 +27,5 @@ interface ResolvedServiceCommand {
 data class DefaultResolvedServiceCommand(
     override var domain: Domain? = null,
     override val service: Service,
-    override val serviceData: CommandDataWithEntityId
+    override val serviceData: CommandDataWithEntityId,
 ) : ResolvedServiceCommand

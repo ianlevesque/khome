@@ -20,26 +20,28 @@ enum class SwitchableValue {
     OFF,
 
     @SerializedName("unavailable")
-    UNAVAILABLE
+    UNAVAILABLE,
 }
 
 data class DefaultAttributes(
     override val userId: UserId?,
     override val friendlyName: FriendlyName,
     override val lastChanged: Instant,
-    override val lastUpdated: Instant
+    override val lastUpdated: Instant,
 ) : Attributes
 
 fun mapSwitchable(switchableValue: SwitchableValue) =
     when (switchableValue) {
-        SwitchableValue.ON -> DefaultResolvedServiceCommand(
-            service = "turn_on".service,
-            serviceData = EntityIdOnlyServiceData()
-        )
-        SwitchableValue.OFF -> DefaultResolvedServiceCommand(
-            service = "turn_off".service,
-            serviceData = EntityIdOnlyServiceData()
-        )
+        SwitchableValue.ON ->
+            DefaultResolvedServiceCommand(
+                service = "turn_on".service,
+                serviceData = EntityIdOnlyServiceData(),
+            )
+        SwitchableValue.OFF ->
+            DefaultResolvedServiceCommand(
+                service = "turn_off".service,
+                serviceData = EntityIdOnlyServiceData(),
+            )
 
         SwitchableValue.UNAVAILABLE -> throw IllegalStateException("State cannot be changed to UNAVAILABLE")
     }

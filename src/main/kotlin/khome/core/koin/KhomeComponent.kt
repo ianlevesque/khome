@@ -8,9 +8,7 @@ import org.koin.core.KoinComponent
 @ObsoleteCoroutinesApi
 @KtorExperimentalAPI
 internal interface KhomeComponent : KoinComponent {
-
-    override fun getKoin(): Koin =
-        checkNotNull(KhomeKoinContext.application) { "No KoinApplication found" }.koin
+    override fun getKoin(): Koin = checkNotNull(KhomeKoinContext.application) { "No KoinApplication found" }.koin
 }
 
 internal object KoinContainer : KhomeComponent

@@ -26,11 +26,12 @@ fun KhomeApplication.InputSelect(objectId: ObjectId): InputSelect =
         ServiceCommandResolver { desiredState ->
             DefaultResolvedServiceCommand(
                 service = "select_option".service,
-                serviceData = InputSelectServiceData(
-                    desiredState.value
-                )
+                serviceData =
+                    InputSelectServiceData(
+                        desiredState.value,
+                    ),
             )
-        }
+        },
     )
 
 data class InputSelectAttributes(
@@ -39,7 +40,7 @@ data class InputSelectAttributes(
     override val userId: UserId?,
     override val friendlyName: FriendlyName,
     override val lastChanged: Instant,
-    override val lastUpdated: Instant
+    override val lastUpdated: Instant,
 ) : Attributes
 
 data class InputSelectServiceData(val option: Option) : DesiredServiceData()

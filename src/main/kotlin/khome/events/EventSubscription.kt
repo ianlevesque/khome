@@ -10,14 +10,14 @@ import kotlin.reflect.KClass
 internal class EventSubscription<ED>(
     private val app: KhomeApplicationImpl,
     private val mapper: ObjectMapperInterface,
-    private val eventDataType: KClass<*>
+    private val eventDataType: KClass<*>,
 ) {
     private val eventHandler: MutableList<EventHandler<ED>> = mutableListOf()
 
     fun attachEventHandler(handler: EventHandlerFunction<ED>): Switchable =
         EventHandlerImpl(
             handler,
-            EventHandlerExceptionHandler(app.eventHandlerExceptionHandlerFunction)
+            EventHandlerExceptionHandler(app.eventHandlerExceptionHandlerFunction),
         ).also { eventHandler.add(it) }
 
     @Suppress("UNCHECKED_CAST")

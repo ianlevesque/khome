@@ -9,35 +9,43 @@ import khome.values.domain
 
 private const val REQUEST_LOCATION_UPDATE = "request_location_update"
 
-fun KhomeApplication.notifyMobileApp(device: Device, message: String, title: String? = null) =
-    callService(
-        domain = "notify".domain,
-        service = Service.fromDevice(device),
-        parameterBag = NotificationMessage(
+fun KhomeApplication.notifyMobileApp(
+    device: Device,
+    message: String,
+    title: String? = null,
+) = callService(
+    domain = "notify".domain,
+    service = Service.fromDevice(device),
+    parameterBag =
+        NotificationMessage(
             message = message,
-            title = title
-        )
-    )
+            title = title,
+        ),
+)
 
-inline fun KhomeApplication.notifyMobileApp(device: Device, messageBuilder: NotificationWithDataMessage.() -> Unit) =
-    callService(
-        domain = "notify".domain,
-        service = Service.fromDevice(device),
-        parameterBag = NotificationWithDataMessage().apply(messageBuilder)
-    )
+inline fun KhomeApplication.notifyMobileApp(
+    device: Device,
+    messageBuilder: NotificationWithDataMessage.() -> Unit,
+) = callService(
+    domain = "notify".domain,
+    service = Service.fromDevice(device),
+    parameterBag = NotificationWithDataMessage().apply(messageBuilder),
+)
 
-fun KhomeApplication.notifyMobileApp(vararg devices: Device, title: String, message: String) =
-    devices.forEach { device -> notifyMobileApp(device, message, title) }
+fun KhomeApplication.notifyMobileApp(
+    vararg devices: Device,
+    title: String,
+    message: String,
+) = devices.forEach { device -> notifyMobileApp(device, message, title) }
 
-fun KhomeApplication.requestLocationUpdate(device: Device) =
-    notifyMobileApp(device, message = REQUEST_LOCATION_UPDATE)
+fun KhomeApplication.requestLocationUpdate(device: Device) = notifyMobileApp(device, message = REQUEST_LOCATION_UPDATE)
 
 fun KhomeApplication.requestLocationUpdate(vararg devices: Device) =
     devices.forEach { device -> notifyMobileApp(device, message = REQUEST_LOCATION_UPDATE) }
 
 data class NotificationMessage(
     val title: String? = null,
-    val message: String
+    val message: String,
 )
 
 class NotificationWithDataMessage {
@@ -45,6 +53,7 @@ class NotificationWithDataMessage {
     lateinit var message: String
     private val data: MessageData =
         MessageData()
+
     fun data(builder: MessageData.() -> Unit) = data.apply(builder)
 }
 
@@ -60,20 +69,28 @@ class MessageData {
     var entityId: EntityId? = null
 
     enum class PresentationOptions {
-        ALERT, BATCH, SOUND
+        ALERT,
+        BATCH,
+        SOUND,
     }
 
     fun push(builder: PushData.() -> Unit) = push.apply(builder)
+
     fun mapActionData(builder: MapActionData.() -> Unit) {
         actionData = MapActionData().apply(builder)
     }
 
-    fun attachment(url: String? = null, contentType: String? = null, hideThumbnail: Boolean = false) {
-        attachment = AttachmentData(
-            url = url,
-            contentType = contentType,
-            hideThumbnail = hideThumbnail
-        )
+    fun attachment(
+        url: String? = null,
+        contentType: String? = null,
+        hideThumbnail: Boolean = false,
+    ) {
+        attachment =
+            AttachmentData(
+                url = url,
+                contentType = contentType,
+                hideThumbnail = hideThumbnail,
+            )
     }
 }
 
@@ -82,7 +99,7 @@ data class AttachmentData(
     @SerializedName("content-type")
     val contentType: String?,
     @SerializedName("hide-thumbnail")
-    val hideThumbnail: Boolean?
+    val hideThumbnail: Boolean?,
 )
 
 class PushData {
@@ -92,7 +109,11 @@ class PushData {
     var badge: Int? = null
     var category: String? = null
 
-    fun sound(name: String = "default", critical: Int? = null, volume: Double? = null) {
+    fun sound(
+        name: String = "default",
+        critical: Int? = null,
+        volume: Double? = null,
+    ) {
         sound = SoundData(name, critical, volume)
     }
 }
@@ -109,7 +130,9 @@ data class MapActionData(
     var showsPointOfInterest: Boolean? = null,
     var showsScale: Boolean? = null,
     var showsTraffic: Boolean? = null,
-    var showsUsersLocation: Boolean? = null
+    var showsUsersLocation: Boolean? = null,
 )
 
-data class ApnsHeaders(@SerializedName("apns-collapse-id") var id: String? = null)
+data class ApnsHeaders(
+    @SerializedName("apns-collapse-id") var id: String? = null,
+)

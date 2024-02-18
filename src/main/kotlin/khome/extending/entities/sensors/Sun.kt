@@ -20,8 +20,7 @@ import java.time.Instant
 typealias Sun = Sensor<SunState, SunAttributes>
 
 @Suppress("FunctionName")
-fun KhomeApplication.Sun(): Sun =
-    Sensor(EntityId.fromPair("sun".domain to "sun".objectId))
+fun KhomeApplication.Sun(): Sun = Sensor(EntityId.fromPair("sun".domain to "sun".objectId))
 
 data class SunState(override val value: SunValue) : State<SunValue>
 
@@ -30,7 +29,7 @@ enum class SunValue {
     ABOVE_HORIZON,
 
     @SerializedName("below_horizon")
-    BELOW_HORIZON
+    BELOW_HORIZON,
 }
 
 data class SunAttributes(
@@ -46,7 +45,7 @@ data class SunAttributes(
     override val userId: UserId?,
     override val lastChanged: Instant,
     override val lastUpdated: Instant,
-    override val friendlyName: FriendlyName
+    override val friendlyName: FriendlyName,
 ) : Attributes
 
 val Sun.isAboveHorizon
@@ -58,8 +57,6 @@ val Sun.isBelowHorizon
 val Sun.isRising
     get() = attributes.rising == Rising.TRUE
 
-fun Sun.onSunrise(f: Sun.(Switchable) -> Unit) =
-    onMeasurementValueChangedFrom(SunValue.BELOW_HORIZON to SunValue.ABOVE_HORIZON, f)
+fun Sun.onSunrise(f: Sun.(Switchable) -> Unit) = onMeasurementValueChangedFrom(SunValue.BELOW_HORIZON to SunValue.ABOVE_HORIZON, f)
 
-fun Sun.onSunset(f: Sun.(Switchable) -> Unit) =
-    onMeasurementValueChangedFrom(SunValue.ABOVE_HORIZON to SunValue.BELOW_HORIZON, f)
+fun Sun.onSunset(f: Sun.(Switchable) -> Unit) = onMeasurementValueChangedFrom(SunValue.ABOVE_HORIZON to SunValue.BELOW_HORIZON, f)

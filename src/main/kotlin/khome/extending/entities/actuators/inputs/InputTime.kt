@@ -26,9 +26,9 @@ fun KhomeApplication.InputTime(objectId: ObjectId): InputTime =
         ServiceCommandResolver { desiredState ->
             DefaultResolvedServiceCommand(
                 service = "set_datetime".service,
-                serviceData = InputTimeServiceData(desiredState.value)
+                serviceData = InputTimeServiceData(desiredState.value),
             )
-        }
+        },
     )
 
 data class InputTimeState(override val value: LocalTime) : State<LocalTime>
@@ -41,7 +41,7 @@ data class InputTimeAttributes(
     override val userId: UserId?,
     override val friendlyName: FriendlyName,
     override val lastChanged: Instant,
-    override val lastUpdated: Instant
+    override val lastUpdated: Instant,
 ) : Attributes
 
 data class InputTimeServiceData(private val time: LocalTime) : DesiredServiceData()

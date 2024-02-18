@@ -21,9 +21,8 @@ internal class EntityStateInitializerImpl(
     val khomeSession: KhomeSession,
     private val sensorStateUpdater: SensorStateUpdater,
     private val actuatorStateUpdater: ActuatorStateUpdater,
-    private val entityRegistrationValidation: EntityRegistrationValidation
+    private val entityRegistrationValidation: EntityRegistrationValidation,
 ) : EntityStateInitializer, KhomeComponent {
-
     private val logger = KotlinLogging.logger { }
     private val id
         get() = CALLER_ID.incrementAndGet()
@@ -37,18 +36,17 @@ internal class EntityStateInitializerImpl(
         setInitialEntityState(consumeStatesResponse())
     }
 
-    private suspend fun sendStatesRequest() =
-        khomeSession.callWebSocketApi(statesRequest)
+    private suspend fun sendStatesRequest() = khomeSession.callWebSocketApi(statesRequest)
 
-    private suspend fun consumeStatesResponse() =
-        khomeSession.consumeSingleMessage<StatesResponse>()
+    private suspend fun consumeStatesResponse() = khomeSession.consumeSingleMessage<StatesResponse>()
 
     @ExperimentalStdlibApi
     private fun setInitialEntityState(stateResponse: StatesResponse) {
         if (stateResponse.success) {
-            val statesByEntityId = stateResponse.result.associateBy { state ->
-                khomeSession.objectMapper.fromJson(state["entity_id"], EntityId::class.java)
-            }
+            val statesByEntityId =
+                stateResponse.result.associateBy { state ->
+                    khomeSession.objectMapper.fromJson(state["entity_id"], EntityId::class.java)
+                }
             entityRegistrationValidation.validate(statesByEntityId.map { it.key })
             for (state in statesByEntityId) {
                 sensorStateUpdater(flattenStateAttributes(state.value), state.key)

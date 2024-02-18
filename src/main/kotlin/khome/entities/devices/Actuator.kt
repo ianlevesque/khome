@@ -49,5 +49,8 @@ interface Actuator<S : State<*>, A : Attributes> : Observable<Actuator<S, A>>, W
      * @param service the name of the action/service to execute
      * @param parameterBag the service parameter object. Has to inherit [CommandDataWithEntityId].
      */
-    fun callService(service: Service, parameterBag: CommandDataWithEntityId = EntityIdOnlyServiceData())
+    fun callService(
+        service: Service,
+        parameterBag: CommandDataWithEntityId = EntityIdOnlyServiceData(),
+    )
 }

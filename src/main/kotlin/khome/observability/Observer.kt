@@ -39,13 +39,14 @@ interface Observable<E> {
 
 internal class ObserverImpl<E>(
     private val f: ObserverFunction<E>,
-    private val exceptionHandler: ObserverExceptionHandler
+    private val exceptionHandler: ObserverExceptionHandler,
 ) : Switchable, Observer<E> {
-
     private val enabled: AtomicBoolean = AtomicBoolean(true)
 
     override fun enable() = enabled.set(true)
+
     override fun disable() = enabled.set(false)
+
     override fun isEnabled(): Boolean = enabled.get()
 
     override fun update(entity: E) {

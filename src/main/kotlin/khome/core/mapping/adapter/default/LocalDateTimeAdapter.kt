@@ -9,7 +9,7 @@ internal class LocalDateTimeAdapter : KhomeTypeAdapter<LocalDateTime> {
         return LocalDateTime
             .parse(
                 value as String,
-                DateTimeFormatter.ofPattern("y-M-d H:m:s")
+                DateTimeFormatter.ofPattern("y-M-d H:m:s"),
             )
     }
 
@@ -21,7 +21,7 @@ internal class LocalDateTimeAdapter : KhomeTypeAdapter<LocalDateTime> {
             value.dayOfMonth,
             value.hour,
             value.minute,
-            value.second
+            value.second,
         ).toString() as P
     }
 }

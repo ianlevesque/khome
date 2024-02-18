@@ -13,19 +13,19 @@ import org.koin.dsl.koinApplication
  */
 
 internal object KhomeKoinContext {
-
     var application: KoinApplication? = null
     private val logger = KotlinLogging.logger {}
 
     fun startKoinApplication() {
-        application = koinApplication {
-            environmentProperties()
-            runCatching {
-                fileProperties("/khome.properties")
-            }.onFailure {
-                logger.warn { "No khome.properties file found" }
+        application =
+            koinApplication {
+                environmentProperties()
+                runCatching {
+                    fileProperties("/khome.properties")
+                }.onFailure {
+                    logger.warn { "No khome.properties file found" }
+                }
             }
-        }
     }
 
     fun addModule(vararg modules: Module) {

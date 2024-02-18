@@ -9,6 +9,7 @@ data class ColorTemperature private constructor(val value: Int, val unit: Unit) 
 
     companion object : KhomeTypeAdapter<ColorTemperature> {
         fun fromMired(value: Int) = ColorTemperature(value, Unit.MIRED)
+
         fun fromKelvin(value: Int) = ColorTemperature(value, Unit.KELVIN)
 
         override fun <P> from(value: P): ColorTemperature {
@@ -22,7 +23,8 @@ data class ColorTemperature private constructor(val value: Int, val unit: Unit) 
     }
 
     enum class Unit {
-        MIRED, KELVIN
+        MIRED,
+        KELVIN,
     }
 }
 

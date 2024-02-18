@@ -25,7 +25,7 @@ typealias PositionableCover = Actuator<PositionableCoverState, PositionableCover
 @Suppress("FunctionName")
 inline fun <reified S : State<*>, reified A : Attributes> KhomeApplication.Cover(
     objectId: ObjectId,
-    serviceCommandResolver: ServiceCommandResolver<S>
+    serviceCommandResolver: ServiceCommandResolver<S>,
 ): Actuator<S, A> = Actuator(EntityId.fromPair("cover".domain to objectId), serviceCommandResolver)
 
 @Suppress("FunctionName")
@@ -34,27 +34,29 @@ fun KhomeApplication.PositionableCover(objectId: ObjectId): PositionableCover =
         objectId,
         ServiceCommandResolver { state ->
             when (state.value) {
-                PositionableCoverValue.OPEN -> state.currentPosition?.let { position ->
-                    DefaultResolvedServiceCommand(
-                        service = "set_cover_position".service,
-                        serviceData = PositionableCoverServiceData(position)
+                PositionableCoverValue.OPEN ->
+                    state.currentPosition?.let { position ->
+                        DefaultResolvedServiceCommand(
+                            service = "set_cover_position".service,
+                            serviceData = PositionableCoverServiceData(position),
+                        )
+                    } ?: DefaultResolvedServiceCommand(
+                        service = "open_cover".service,
+                        serviceData = EntityIdOnlyServiceData(),
                     )
-                } ?: DefaultResolvedServiceCommand(
-                    service = "open_cover".service,
-                    serviceData = EntityIdOnlyServiceData()
-                )
 
-                PositionableCoverValue.CLOSED -> DefaultResolvedServiceCommand(
-                    service = "close_cover".service,
-                    serviceData = EntityIdOnlyServiceData()
-                )
+                PositionableCoverValue.CLOSED ->
+                    DefaultResolvedServiceCommand(
+                        service = "close_cover".service,
+                        serviceData = EntityIdOnlyServiceData(),
+                    )
             }
-        }
+        },
     )
 
 data class PositionableCoverState(
     override val value: PositionableCoverValue,
-    val currentPosition: Position? = null
+    val currentPosition: Position? = null,
 ) : State<PositionableCoverValue>
 
 enum class PositionableCoverValue {
@@ -62,7 +64,7 @@ enum class PositionableCoverValue {
     OPEN,
 
     @SerializedName("closed")
-    CLOSED
+    CLOSED,
 }
 
 enum class Working {
@@ -70,7 +72,7 @@ enum class Working {
     YES,
 
     @SerializedName("No")
-    NO
+    NO,
 }
 
 data class PositionableCoverAttributes(
@@ -78,7 +80,7 @@ data class PositionableCoverAttributes(
     override val userId: UserId?,
     override val lastChanged: Instant,
     override val lastUpdated: Instant,
-    override val friendlyName: FriendlyName
+    override val friendlyName: FriendlyName,
 ) : Attributes
 
 data class PositionableCoverServiceData(val position: Position) : DesiredServiceData()

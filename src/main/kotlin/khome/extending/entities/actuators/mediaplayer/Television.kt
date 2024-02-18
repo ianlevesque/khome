@@ -34,47 +34,50 @@ fun KhomeApplication.Television(objectId: ObjectId): Television =
                     desiredState.isVolumeMuted?.let { isMuted ->
                         DefaultResolvedServiceCommand(
                             service = "volume_mute".service,
-                            serviceData = TelevisionDesiredServiceData(
-                                isVolumeMuted = isMuted
-                            )
+                            serviceData =
+                                TelevisionDesiredServiceData(
+                                    isVolumeMuted = isMuted,
+                                ),
                         )
                     } ?: desiredState.volumeLevel?.let { volumeLevel ->
                         DefaultResolvedServiceCommand(
                             service = "volume_set".service,
-                            serviceData = TelevisionDesiredServiceData(
-                                volumeLevel = volumeLevel
-                            )
+                            serviceData =
+                                TelevisionDesiredServiceData(
+                                    volumeLevel = volumeLevel,
+                                ),
                         )
                     } ?: desiredState.source?.let { source ->
                         DefaultResolvedServiceCommand(
                             service = "volume_set".service,
-                            serviceData = TelevisionDesiredServiceData(
-                                source = source
-                            )
+                            serviceData =
+                                TelevisionDesiredServiceData(
+                                    source = source,
+                                ),
                         )
                     } ?: DefaultResolvedServiceCommand(
                         service = "turn_on".service,
-                        serviceData = EntityIdOnlyServiceData()
+                        serviceData = EntityIdOnlyServiceData(),
                     )
                 }
 
                 SwitchableValue.OFF -> {
                     DefaultResolvedServiceCommand(
                         service = "turn_off".service,
-                        serviceData = EntityIdOnlyServiceData()
+                        serviceData = EntityIdOnlyServiceData(),
                     )
                 }
 
                 SwitchableValue.UNAVAILABLE -> throw IllegalStateException("State cannot be changed to UNAVAILABLE")
             }
-        }
+        },
     )
 
 data class TelevisionState(
     override val value: SwitchableValue,
     val volumeLevel: VolumeLevel? = null,
     val isVolumeMuted: Mute? = null,
-    val source: MediaSource? = null
+    val source: MediaSource? = null,
 ) : State<SwitchableValue>
 
 data class TelevisionAttributes(
@@ -84,13 +87,13 @@ data class TelevisionAttributes(
     override val userId: UserId?,
     override val friendlyName: FriendlyName,
     override val lastChanged: Instant,
-    override val lastUpdated: Instant
+    override val lastUpdated: Instant,
 ) : Attributes
 
 data class TelevisionDesiredServiceData(
     val isVolumeMuted: Mute? = null,
     val volumeLevel: VolumeLevel? = null,
-    val source: MediaSource? = null
+    val source: MediaSource? = null,
 ) : DesiredServiceData()
 
 val Television.isOn
@@ -126,8 +129,6 @@ fun Television.setSource(source: MediaSource) {
     desiredState = TelevisionState(value = SwitchableValue.ON, source = source)
 }
 
-fun Television.onTurnedOn(f: Television.(Switchable) -> Unit) =
-    onStateValueChangedFrom(SwitchableValue.OFF to SwitchableValue.ON, f)
+fun Television.onTurnedOn(f: Television.(Switchable) -> Unit) = onStateValueChangedFrom(SwitchableValue.OFF to SwitchableValue.ON, f)
 
-fun Television.onTurnedOff(f: Television.(Switchable) -> Unit) =
-    onStateValueChangedFrom(SwitchableValue.ON to SwitchableValue.OFF, f)
+fun Television.onTurnedOff(f: Television.(Switchable) -> Unit) = onStateValueChangedFrom(SwitchableValue.ON to SwitchableValue.OFF, f)

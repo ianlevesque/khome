@@ -29,11 +29,12 @@ fun KhomeApplication.InputNumber(objectId: ObjectId): InputNumber =
         ServiceCommandResolver { desiredState ->
             DefaultResolvedServiceCommand(
                 service = "set_value".service,
-                serviceData = SettableStateValueServiceData(
-                    desiredState.value
-                )
+                serviceData =
+                    SettableStateValueServiceData(
+                        desiredState.value,
+                    ),
             )
-        }
+        },
     )
 
 data class InputNumberState(override val value: Double) : State<Double>
@@ -48,5 +49,5 @@ data class InputNumberAttributes(
     override val userId: UserId?,
     override val friendlyName: FriendlyName,
     override val lastChanged: Instant,
-    override val lastUpdated: Instant
+    override val lastUpdated: Instant,
 ) : Attributes

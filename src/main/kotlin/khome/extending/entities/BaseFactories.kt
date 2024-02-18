@@ -19,5 +19,5 @@ inline fun <reified S : State<*>, reified A : Attributes> KhomeApplication.Senso
 @Suppress("FunctionName")
 inline fun <reified S : State<*>, reified A : Attributes> KhomeApplication.Actuator(
     id: EntityId,
-    serviceCommandResolver: ServiceCommandResolver<S>
+    serviceCommandResolver: ServiceCommandResolver<S>,
 ): Actuator<S, A> = Actuator(id, S::class, A::class, serviceCommandResolver)
