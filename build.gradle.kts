@@ -71,15 +71,10 @@ tasks {
 
 defaultTasks("dokkaHtml")
 
-val sourcesJar by tasks.registering(Jar::class) {
-    from(sourceSets["main"].allSource)
-}
-
 publishing {
     publications {
         register("mavenJava", MavenPublication::class.java) {
             from(components["java"])
-            artifact(sourcesJar.get())
         }
     }
 }
